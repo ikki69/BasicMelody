@@ -1,0 +1,3537 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,800;0,900;1,400&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400..700&display=swap');
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+@theme {
+  /* Palet "Swapping pastels": satu bidang pastel per babak, tinta near-black,
+     dan grafit hanya untuk tombol. Kontras diuji di bawah (lihat :root). */
+  --color-bg: #c3cbe5;
+  --color-fg: #141414;
+  --color-muted: #4a5068;
+  --color-line: rgba(20, 20, 20, 0.16);
+  --color-accent: #3a3a40;
+  --color-field-periwinkle: #c3cbe5;
+  --color-field-pink: #efd3da;
+  --color-field-sand: #e6dccd;
+  --color-field-sage: #cfd3cb;
+  --color-field-peach: #f9cdbd;
+
+  /* Font */
+  --font-display: "Archivo", system-ui, sans-serif;
+  /* Muka teks badan: Manrope. Grotesk berkaki terbuka, angka dan huruf
+     kecilnya jelas pada 17px, dan nadanya lebih tenang daripada Archivo
+     yang dipakai untuk judul. */
+  --font-body: "Manrope", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* Ukuran judul fluid (clamp).
+     --text-display dipakai untuk kata "Basicmelody." di layar pertama: ukurannya
+     dibatasi agar 12 huruf tetap muat SATU baris di 390px maupun 1440px. */
+  --text-display: clamp(2.2rem, 10.5vw, 9.5rem);
+  --text-display-lg: clamp(3.5rem, 10vw, 8rem);
+  --text-display-md: clamp(2.25rem, 7vw, 6rem);
+  --text-display-sm: clamp(1.75rem, 3.4vw, 3rem);
+  /* Pernyataan besar di babak Manifesto: dibatasi agar tiap barisnya
+     (maksimal dua) tidak pernah membungkus sendiri. */
+  --text-statement: clamp(1.8rem, 5.6vw, 4.6rem);
+  --text-serif-lg: clamp(1.5rem, 4vw, 3rem);
+  --text-serif-md: clamp(1.75rem, 5vw, 4.5rem);
+  --text-hud: clamp(0.95rem, 1.6vw, 1.35rem);
+  --text-ghost: clamp(10rem, 26vw, 26rem);
+
+  /* Babak gelap (Showcase): bidang near-black dengan tinta terang. */
+  --color-dark-field: #141414;
+  --color-on-dark: #f2f2f2;
+  --color-on-dark-muted: #a9aec4;
+
+  /* Tracking */
+  --tracking-tight: -0.05em;
+  --tracking-tighter: -0.06em;
+
+  /* Leading */
+  --leading-display: 0.9;
+
+  /* Gerak: satu keluarga kurva untuk seluruh halaman.
+     --ease-soft  : ayunan dua arah (denyut, kilau) â€” pengganti ease-in-out.
+     --ease-out-strong: masuk/keluar UI; mendarat cepat lalu tenang. */
+  --ease-soft: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-out-strong: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   CUSTOM UTILITIES
+   ============================================================ */
+
+/* Tipografi display (weight 800â€“900, tracking rapat, leading 0.9) */
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: var(--tracking-tighter);
+  line-height: var(--leading-display);
+}
+
+@utility type-display-medium {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+}
+
+/* Serif aksen italic */
+@utility type-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* Label kecil (HUD, keterangan, tombol kecil).
+   Dulu font kode berukuran mungil, huruf besar semua, dan renggang; kini
+   memakai muka teks brand dengan huruf biasa, agar terbaca dan tidak jadi
+   kostum. */
+@utility type-label-sm {
+  font-family: var(--font-display);
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+}
+
+@utility type-label-base {
+  font-family: var(--font-display);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+/* Teks badan halaman. */
+@utility type-body {
+  font-family: var(--font-body);
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================================
+   CLEANUP / BASE
+   ============================================================ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100svh;
+    width: 100%;
+  }
+
+  ::selection {
+    background-color: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-fg);
+    outline-offset: 2px;
+  }
+
+  /* Hormati prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ============================================================
+   ALIAS TOKEN
+   Nama variabel ringkas untuk komponen CSS biasa (CTA & Introduction).
+   Nilainya sama dengan token @theme di atas, jadi satu sumber warna.
+   (--font-serif sudah bernama sama dari @theme.)
+   ============================================================ */
+/* Light theme â€” palet "Swapping pastels" (satu bidang pastel per babak) */
+:root {
+  --color-bg: #c3cbe5;
+  --color-fg: #141414;
+  --color-muted: #4a5068;
+  --color-line: rgba(20, 20, 20, 0.16);
+
+  --bg: var(--color-bg);
+  --fg: var(--color-fg);
+  --muted: var(--color-muted);
+  --border: var(--color-line);
+  --font-sans: var(--font-display);
+  --line-strong: rgba(20, 20, 20, 0.32);
+
+  /* Bidang babak: satu warna datar penuh per bagian/halaman. */
+  --field-periwinkle: #c3cbe5;
+  --field-pink: #efd3da;
+  --field-sand: #e6dccd;
+  --field-sage: #cfd3cb;
+  --field-peach: #f9cdbd;
+  --on-field: #141414;
+  --field-surface: #ffffff;
+
+  /* Aksi: grafit netral, hanya untuk tombol utama. */
+  --accent: #3a3a40;
+  --accent-hover: #4d4d55;
+  --accent-edge: #232327;
+  --accent-ink: #ffffff;
+
+  /*
+   * Warna halaman Level. Nama "-accent" menggantikan "-green" karena
+   * nilainya kini grafit; emas/merah/biru tetap semantik (bintang/salah/fokus)
+   * dan varian "-text" dipakai bila warnanya menjadi teks di atas bidang terang.
+   */
+  --lv-accent: var(--accent);
+  --lv-accent-edge: var(--accent-edge);
+  --lv-gold: #ffc800;
+  --lv-gold-edge: #c79a00;
+  --lv-gold-text: #6b5000;
+  --lv-red: #ff4b4b;
+  --lv-red-edge: #b33030;
+  --lv-red-text: #a52424;
+  --lv-blue: #1cb0f6;
+  --lv-blue-edge: #0f7cb0;
+  --lv-blue-text: #10557a;
+  --lv-surface: #ffffff;
+  --lv-surface-2: #eef1f9;
+  /* Teks putih di atas bidang grafit: lihat --accent-ink. (--lv-ink lama: teks
+   gelap, selalu berdempetan dengan bidang gelap â€” gagal kontras 2.1:1.) */
+}
+
+/* ============================================================
+   CTA Next: tombol di bagian paling bawah landing page
+   Gaya utama (tanpa varian) = pil hitam solid; varian --ghost
+   dipakai untuk aksi sekunder ("Materi Latihan").
+   ============================================================ */
+.cta-next {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-height: 3.25rem;
+  padding: 0 1.75rem;
+  border: none;
+  border-radius: 999px;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+/* Ikon di dalam CTA (dipakai tombol "Materi Latihan"). */
+.cta-next__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Varian sekunder: bidang putih (beda nada), bukan garis luar.
+   Selector digandakan agar menang dari .cta-next:hover / :active
+   yang berada setelahnya dengan spesifisitas sama. */
+.cta-next.cta-next--ghost {
+  background-color: var(--field-surface);
+  color: var(--on-field);
+}
+
+.cta-next.cta-next--ghost:hover {
+  background-color: #ffffff;
+  color: var(--accent);
+}
+
+.cta-next.cta-next--ghost:active {
+  transform: translateY(1px);
+}
+
+/* CTA terkunci (Materi Latihan sebelum Introduction tuntas). */
+.cta-next.cta-next--locked,
+.cta-next.cta-next--locked:hover,
+.cta-next.cta-next--locked:active {
+  opacity: 1;
+  cursor: not-allowed;
+  transform: none;
+  background-color: rgba(20, 20, 20, 0.07);
+  color: var(--on-field);
+}
+
+.cta-next__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.28s ease;
+}
+
+.cta-next:hover {
+  transform: translateY(-2px);
+  background-color: var(--accent-hover);
+}
+
+.cta-next:active {
+  transform: translateY(1px);
+}
+
+.cta-next:hover .cta-next__arrow,
+.cta-next:focus-visible .cta-next__arrow {
+  transform: translateX(6px);
+}
+
+.cta-next:focus-visible {
+  outline: 3px solid var(--accent-edge);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   CTA Panel: bidang putih (beda nada) pembungkus tombol di akhir landing
+   ============================================================ */
+.cta-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 46rem;
+  padding: 2.5rem 2rem;
+  border: none;
+  border-radius: 24px;
+  background-color: var(--field-surface);
+}
+
+.cta-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.cta-panel__actions .cta-next {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .cta-panel__actions {
+    flex-direction: row;
+    justify-content: center;
+    width: auto;
+  }
+
+  .cta-panel__actions .cta-next {
+    width: auto;
+  }
+}
+
+/* ============================================================
+   Note strip: tuts Doâ€“Sol di babak Manifesto (satu hal yang bisa dicoba)
+   ============================================================ */
+.note-strip__key {
+  min-width: 3.5rem;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--field-surface);
+  color: var(--on-field);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: transform 0.14s ease, background-color 0.14s ease, color 0.14s ease;
+}
+
+.note-strip__key:hover {
+  background-color: #ffffff;
+}
+
+.note-strip__key.is-active {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  transform: translateY(2px);
+}
+
+.note-strip__key:focus-visible {
+  outline: 3px solid var(--accent-edge);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-strip__key {
+    transition: none;
+  }
+}
+
+/* Fade-out singkat sebelum pindah ke halaman Introduction */
+#root {
+  transition: opacity 0.3s ease;
+}
+
+html.page-leaving #root {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-next,
+  .cta-next__arrow,
+  #root {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Introduction: halaman "Mengenal Notasi Musik Dasar"
+   ============================================================ */
+.intro-page {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  width: 100%;
+  flex-direction: column;
+  /*
+   * Sengaja transparan: warna latar sudah dipakai body (dipropagasi ke canvas),
+   * jadi tampilannya sama tetapi latar not musik (MusicBackground, fixed di
+   * belakang konten) tetap terlihat. Halaman landing tidak memakai kelas ini.
+   */
+  background-color: transparent;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  padding: 5.5rem 1.25rem 7rem;
+  animation: introPageIn 0.4s ease both;
+}
+
+@keyframes introPageIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Header: logo + indikator langkah --- */
+.intro-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  pointer-events: none;
+}
+
+.intro-logo {
+  pointer-events: auto;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: var(--tracking-tighter);
+  line-height: 1;
+  color: var(--fg);
+  text-decoration: none;
+  transition: opacity 0.25s ease;
+}
+
+.intro-logo:hover {
+  opacity: 0.7;
+}
+
+.step-indicator {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.step-indicator__star {
+  width: 0.95em;
+  height: 0.95em;
+  color: var(--lv-gold-text);
+  vertical-align: -0.12em;
+}
+
+/* --- Isi langkah --- */
+.intro-container {
+  display: flex;
+  width: 100%;
+  max-width: 44rem;
+  flex: 1;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.step-content {
+  display: none;
+}
+
+.step-content.active {
+  display: block;
+  animation: introStepIn 0.25s ease both;
+}
+
+@keyframes introStepIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.step-content h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.05;
+  color: var(--fg);
+}
+
+.step-content > p {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1rem, 2.6vw, 1.35rem);
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* --- Bingkai ornamen kartu paranada (OrnateFrame) ---
+ * Catatan: aturan ini sengaja di atas .paranada-svg/.lv-staff-wrap, sedangkan
+ * ornamennya memakai nilai yang dihitung dari --of-orn (lihat OrnateFrame.tsx).
+ * Semua ukuran proporsional terhadap --of-orn supaya tebal garis dalam, busur
+ * sudut, dan panjang sisi tetap sinkron di rasio apa pun.
+ * Sisi lurus = div terpisah (bukan SVG diregangkan); ornamen sudut = satu <path>
+ * daun yang dipakai ulang 4x dan dicerminkan. */
+.ornate-frame {
+  /* Fallback sebelum tinggi kartu diukur dari JS (lihat OrnateFrame.tsx). */
+  --of-orn: clamp(24px, 6vw, 64px);
+  --of-pad: clamp(20px, 3.5vw, 40px);
+  --of-inset: calc(var(--of-orn) * 0.3125); /* 15/48 â€” jarak garis dalam dari tepi */
+  --of-thick: calc(var(--of-orn) / 12); /* 4/48 â€” tebal garis dalam & busur */
+  --of-arc: calc(var(--of-orn) * 0.5417); /* 26/48 â€” ujung garis dalam ke tepi */
+  --of-out: calc(var(--of-orn) * 0.05); /* garis luar tipis dari tepi */
+  --of-thin: max(1px, calc(var(--of-orn) / 44));
+  --of-gap: calc(var(--of-orn) * 0.5); /* celah garis luar di tiap sudut */
+  position: relative;
+  color: var(--lv-accent);
+}
+
+/* Latar gelap kartu tetap seperti sebelumnya, hanya pindah ke bingkai agar
+ * bingkai ornamen ikut berdiri di atas permukaan kartu (bukan di luar kartu). */
+.ornate-frame--surface {
+  background-color: var(--lv-surface);
+}
+
+.lv-staff-frame {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.ornate-frame__content {
+  position: relative;
+  padding: var(--of-pad);
+}
+
+.ornate-frame__line,
+.ornate-frame__edge {
+  position: absolute;
+  background-color: currentColor;
+  pointer-events: none;
+}
+
+/* Garis luar: tipis, berhenti sedikit sebelum sudut (celah tempat ornamen). */
+.ornate-frame__line {
+  opacity: 0.45;
+}
+
+.ornate-frame__line--top {
+  top: var(--of-out);
+  right: var(--of-gap);
+  left: var(--of-gap);
+  height: var(--of-thin);
+  transform-origin: 0 50%;
+}
+
+.ornate-frame__line--right {
+  top: var(--of-gap);
+  right: var(--of-out);
+  bottom: var(--of-gap);
+  width: var(--of-thin);
+  transform-origin: 50% 0;
+}
+
+.ornate-frame__line--bottom {
+  right: var(--of-gap);
+  bottom: var(--of-out);
+  left: var(--of-gap);
+  height: var(--of-thin);
+  transform-origin: 100% 50%;
+}
+
+.ornate-frame__line--left {
+  top: var(--of-gap);
+  bottom: var(--of-gap);
+  left: var(--of-out);
+  width: var(--of-thin);
+  transform-origin: 50% 100%;
+}
+
+/* Garis dalam: tebal, kedua ujungnya bertemu busur ornamen sudut. */
+.ornate-frame__edge {
+  opacity: 0.8;
+}
+
+.ornate-frame__edge--top {
+  top: calc(var(--of-inset) - var(--of-thick) / 2);
+  right: var(--of-arc);
+  left: var(--of-arc);
+  height: var(--of-thick);
+  transform-origin: 0 50%;
+}
+
+.ornate-frame__edge--right {
+  top: var(--of-arc);
+  right: calc(var(--of-inset) - var(--of-thick) / 2);
+  bottom: var(--of-arc);
+  width: var(--of-thick);
+  transform-origin: 50% 0;
+}
+
+.ornate-frame__edge--bottom {
+  right: var(--of-arc);
+  bottom: calc(var(--of-inset) - var(--of-thick) / 2);
+  left: var(--of-arc);
+  height: var(--of-thick);
+  transform-origin: 100% 50%;
+}
+
+.ornate-frame__edge--left {
+  top: var(--of-arc);
+  bottom: var(--of-arc);
+  left: calc(var(--of-inset) - var(--of-thick) / 2);
+  width: var(--of-thick);
+  transform-origin: 50% 100%;
+}
+
+/* Ornamen sudut: kotak --of-orn di tiap sudut; animasi scale GSAP memakai
+ * transform-origin di sudut luar, pencerminan dipasang di <svg> (bukan di
+ * wrapper) supaya tidak tertimpa animasi. */
+.ornate-frame__corner {
+  position: absolute;
+  width: var(--of-orn);
+  height: var(--of-orn);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.ornate-frame__corner--tl {
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+.ornate-frame__corner--tr {
+  top: 0;
+  right: 0;
+  transform-origin: 100% 0;
+}
+
+.ornate-frame__corner--br {
+  right: 0;
+  bottom: 0;
+  transform-origin: 100% 100%;
+}
+
+.ornate-frame__corner--bl {
+  bottom: 0;
+  left: 0;
+  transform-origin: 0 100%;
+}
+
+.ornate-frame__corner--tr .ornate-frame__art {
+  transform: scaleX(-1);
+}
+
+.ornate-frame__corner--bl .ornate-frame__art {
+  transform: scaleY(-1);
+}
+
+.ornate-frame__corner--br .ornate-frame__art {
+  transform: scale(-1, -1);
+}
+
+.ornate-frame__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Busur sudut: tebalnya sama dengan garis dalam (non-scaling-stroke agar
+ * ketebalan tetap px walau viewBox-nya ikut membesar). */
+.ornate-frame__arc {
+  stroke: currentColor;
+  stroke-width: var(--of-thick);
+  stroke-linecap: butt;
+  vector-effect: non-scaling-stroke;
+}
+
+/* --- Paranada (SVG) --- */
+.paranada-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.staff-line {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Garis bantu (ledger) not di bawah paranada — mis. not C4.
+ * Tanpa aturan ini, <line> bawaan SVG tak punya stroke dan garisnya
+ * sama sekali tidak terlihat. */
+.staff-ledger {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.staff-space {
+  fill: transparent;
+  transition: fill 0.25s ease;
+}
+
+.staff-space:hover,
+.staff-space.active {
+  fill: rgba(20, 20, 20, 0.07);
+}
+
+/* Tinta paranada memakai token (--fg / --line-strong), bukan warna hard-code.
+ * Kunci G kini berupa path SVG (lihat ClefGlyph), bukan glyph font, jadi
+ * ukuran/posisinya diatur di komponen â€” bukan lewat font-size. */
+.clef-glyph {
+  fill: var(--fg);
+  opacity: 0.9;
+}
+
+/* --- Animasi cahaya step 1: sorot berurutan garis â†’ ruang, atas ke bawah, loop --- */
+.staff-glow {
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--ease-soft);
+}
+
+.staff-line.staff-glow {
+  animation-name: staffLinePulse;
+}
+
+.staff-space.staff-glow {
+  animation-name: staffSpacePulse;
+}
+
+/* Delay berjenjang mengikuti urutan data-index (0 = paling atas) â†’ cahaya "turun". */
+.staff-glow[data-index='0'] {
+  animation-delay: 0s;
+}
+.staff-glow[data-index='1'] {
+  animation-delay: 0.5s;
+}
+.staff-glow[data-index='2'] {
+  animation-delay: 1s;
+}
+.staff-glow[data-index='3'] {
+  animation-delay: 1.5s;
+}
+.staff-glow[data-index='4'] {
+  animation-delay: 2s;
+}
+.staff-glow[data-index='5'] {
+  animation-delay: 2.5s;
+}
+.staff-glow[data-index='6'] {
+  animation-delay: 3s;
+}
+.staff-glow[data-index='7'] {
+  animation-delay: 3.5s;
+}
+.staff-glow[data-index='8'] {
+  animation-delay: 4s;
+}
+
+@keyframes staffLinePulse {
+  0%,
+  16%,
+  100% {
+    stroke: var(--line-strong);
+    stroke-width: 1;
+    filter: none;
+  }
+  6% {
+    stroke: var(--fg);
+    stroke-width: 2.2;
+    filter: none;
+  }
+}
+
+@keyframes staffSpacePulse {
+  0%,
+  16%,
+  100% {
+    fill: transparent;
+    filter: none;
+  }
+  6% {
+    fill: rgba(20, 20, 20, 0.12);
+    filter: none;
+  }
+}
+
+/* --- Step 3: not digeser (drag) --- */
+.paranada-svg--draggable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.paranada-svg--draggable.is-dragging {
+  cursor: grabbing;
+}
+
+/* Saat digeser, not mengikuti kursor tanpa transisi (agar tidak terasa lag). */
+.paranada-svg--draggable.is-dragging .note-ellipse {
+  transition: none;
+}
+
+.note-hit {
+  fill: transparent;
+  pointer-events: all;
+  cursor: grab;
+}
+
+.note-ellipse {
+  fill: var(--fg);
+  transition: cy 0.18s ease;
+}
+
+/* Fokus keyboard pada not (role="slider") */
+.note-ellipse:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 4px;
+}
+
+/* --- Panel penjelasan --- */
+.explanation-container {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.25rem 1.4rem;
+  border-left: 3px solid rgba(58, 58, 64, 0.55);
+  border-radius: 16px;
+  background-color: var(--lv-surface);
+}
+
+.explanation-container h3 {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.explanation-container p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  /* Panel berlatar terang (--lv-surface) di mode putih: teks gelap, penekanan
+     tetap dari <strong> yang memakai --fg. */
+  color: var(--muted);
+}
+
+.explanation-container p:last-child {
+  margin-bottom: 0;
+}
+
+.explanation-container strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.hint-text {
+  margin-top: 0.9rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 10px;
+  background-color: rgba(20, 20, 20, 0.05);
+  color: var(--muted);
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+/* --- Slider nada --- */
+.note-slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  margin: 1.5rem 0 0.75rem;
+  cursor: pointer;
+}
+
+/*
+ * Sejak step 3 digerakkan dengan menarik not (#svg-note), slider hanya
+ * disimpan sebagai kontrol cadangan (id #note-pitch tetap ada) dan
+ * disembunyikan secara visual.
+ */
+.note-slider-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+input.note-slider-input::-webkit-slider-runnable-track {
+  height: 1px;
+  background-color: rgba(20, 20, 20, 0.24);
+}
+
+.note-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -7.5px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--fg);
+  transition: transform 0.2s ease;
+}
+
+.note-slider-input:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+input.note-slider-input::-moz-range-track {
+  height: 1px;
+  background-color: rgba(20, 20, 20, 0.24);
+}
+
+.note-slider-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--fg);
+}
+
+.note-slider-input:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 8px;
+}
+
+.pitch-info-text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* --- Tombol navigasi (gaya chunky: alas tebal, tenggelam saat ditekan) --- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  padding: 0.85rem 1.75rem;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.08s ease, background-color 0.25s ease,
+    color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+}
+
+.btn-primary {
+  background-color: var(--lv-accent);
+  border: 1px solid var(--lv-accent-edge); /* taste-skill-ignore: tombol utama: tepi aksen yang ikut gelap saat hover */
+  color: var(--accent-ink);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.btn-secondary {
+  background-color: var(--lv-surface-2);
+  border: 1px solid var(--border); /* taste-skill-ignore: tombol sekunder: garisnya sendiri yang berubah saat hover */
+  color: var(--fg);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: rgba(20, 20, 20, 0.35);
+  background-color: rgba(20, 20, 20, 0.06);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 3px;
+}
+
+/* --- Responsif --- */
+@media (min-width: 640px) {
+  .intro-page {
+    padding: 6.5rem 2rem 7.5rem;
+  }
+
+  .intro-header {
+    padding: 1.5rem 2rem;
+  }
+
+  .explanation-container {
+    padding: 1.5rem 1.5rem 1.6rem;
+  }
+}
+
+/* Animasi sorot dimatikan bila pengguna memilih gerak berkurang. */
+@media (prefers-reduced-motion: reduce) {
+  .staff-line.staff-glow,
+  .staff-space.staff-glow {
+    animation: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .intro-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .controls {
+    justify-content: stretch;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   LEVEL: path latihan irama + kuis ritme
+   (mekanik ala Duolingo, tampilan tetap gelap/editorial)
+   ============================================================ */
+.level-page {
+  padding-bottom: 8rem;
+}
+
+.level-shell {
+  display: flex;
+  width: 100%;
+  max-width: 46rem;
+  flex: 1;
+  flex-direction: column;
+  gap: 3.5rem;
+  margin: 0 auto;
+}
+
+/* Peta level lebih lebar: butuh kolom untuk maskot pendamping di kiri. */
+.level-shell--wide {
+  max-width: 56rem;
+}
+
+/* --- Tombol chunky (dipakai di halaman Level) --- */
+.lv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.7rem;
+  border: 0;
+  border-radius: 14px;
+  background-color: var(--lv-surface-2);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  cursor: pointer;
+  transition: transform 0.08s ease, background-color 0.2s ease,
+    border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.lv-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.lv-btn:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.lv-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lv-btn--primary {
+  background-color: var(--lv-accent);
+  color: var(--accent-ink);
+}
+
+.lv-btn--primary:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.lv-btn--ghost {
+  background-color: transparent;
+  border: 1px solid var(--border); /* taste-skill-ignore: tombol hantu: hanya garis yang membentuknya */
+  color: var(--fg);
+}
+
+.lv-btn--ghost:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.lv-btn:focus-visible {
+  outline: 2px solid var(--lv-blue);
+  outline-offset: 3px;
+}
+
+/* --- Bintang --- */
+.lv-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.lv-star {
+  fill: rgba(20, 20, 20, 0.16);
+}
+
+.lv-star.is-on {
+  fill: var(--lv-gold);
+}
+
+/* --- Path level --- */
+.lv-path__intro {
+  text-align: center;
+}
+
+.lv-path__heading {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.8rem, 6vw, 2.75rem);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.05;
+}
+
+/* Peta level: maskot pendamping di kiri (menempel saat digulir), deretan
+   level di kolom kanan sehingga tidak bertumpuk dengan maskot. */
+.lv-path__body {
+  display: grid;
+  grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem 2.5rem;
+  margin-top: 2.5rem;
+}
+
+/* Selektor digabung (.mentor-guide.lv-path__guide) karena aturan dasar .mentor-guide
+   berada lebih bawah di berkas ini, tanpa itu align-items & gap-nya menang.
+   pointer-events:none agar bubble tidak menghalangi klik node level. */
+.mentor-guide.lv-path__guide {
+  position: sticky;
+  top: 5.5rem;
+  align-items: flex-end;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.lv-path__guide .mentor {
+  width: 96px;
+  height: 96px;
+}
+
+.lv-path__guide .mentor-bubble {
+  max-width: 100%;
+}
+
+@media (max-width: 1023px) {
+  /* Layar sempit/tablet: maskot pindah ke atas deretan level. */
+  .lv-path__body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+  }
+
+  .mentor-guide.lv-path__guide {
+    position: static;
+  }
+}
+
+.lv-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lv-legend__key {
+  color: var(--fg);
+}
+
+.lv-path__list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Garis putus-putus sebagai "jalan" antar level. */
+.lv-path__list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background-color: rgba(20, 20, 20, 0.2);
+}
+
+.lv-path__item {
+  position: relative;
+  display: flex;
+}
+
+.lv-path__item.is-left {
+  justify-content: flex-start;
+}
+
+.lv-path__item.is-right {
+  justify-content: flex-end;
+}
+
+.lv-node {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 100%;
+  padding: 0.7rem 1.1rem 0.7rem 0.7rem;
+  border: 1px solid var(--border); /* taste-skill-ignore: kartu level: warna garis menandai status terbuka/selesai */
+  border-radius: 18px;
+  background-color: var(--lv-surface);
+  transition: border-color 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.lv-path__item.is-right .lv-node {
+  flex-direction: row-reverse;
+  padding: 0.7rem 0.7rem 0.7rem 1.1rem;
+  text-align: right;
+}
+
+.lv-node:hover:not(.is-locked) {
+  border-color: rgba(20, 20, 20, 0.32);
+}
+
+.lv-node.is-done {
+  border-color: rgba(58, 58, 64, 0.35);
+}
+
+.lv-node.is-locked {
+  opacity: 0.55;
+}
+
+.lv-node__button {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--lv-surface-2);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.08s ease, background-color 0.2s ease;
+}
+
+.lv-node__button:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.lv-node__button:disabled {
+  cursor: not-allowed;
+}
+
+.lv-node.is-open .lv-node__button {
+  background-color: var(--lv-blue-text);
+  color: var(--accent-ink);
+}
+
+.lv-node.is-open .lv-node__button:active {
+  transform: translateY(2px);
+}
+
+.lv-node.is-done .lv-node__button {
+  background-color: var(--lv-accent);
+  color: var(--accent-ink);
+}
+
+.lv-node.is-done .lv-node__button:active {
+  transform: translateY(2px);
+}
+
+.lv-node__button:focus-visible {
+  outline: 2px solid var(--lv-blue);
+  outline-offset: 3px;
+}
+
+.lv-node__crown {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.4rem;
+  display: inline-flex;
+  color: var(--lv-gold-text);
+}
+
+.lv-node__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.lv-node__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+}
+
+.lv-node__stars {
+  margin-top: 0.15rem;
+}
+
+.lv-path__foot {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  max-width: 32rem;
+  margin: 2.75rem auto 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-path__foot-icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--lv-gold-text);
+}
+
+/* --- Koleksi badge --- */
+.lv-badges__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.lv-badges__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-badges__count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.lv-badges__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border); /* taste-skill-ignore: lencana: warna garis menandai terbuka/terkunci */
+  border-radius: 14px;
+  background-color: rgba(20, 20, 20, 0.03);
+  opacity: 0.5;
+  transition: opacity 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.lv-badge.is-earned {
+  opacity: 1;
+  border-color: rgba(255, 200, 0, 0.35);
+  background-color: rgba(255, 200, 0, 0.05);
+}
+
+.lv-badge__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 10px;
+  background-color: rgba(20, 20, 20, 0.05);
+  color: var(--muted);
+}
+
+.lv-badge.is-earned .lv-badge__icon {
+  background-color: rgba(255, 200, 0, 0.14);
+  color: var(--lv-gold-text);
+}
+
+.lv-badge__text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.lv-badge__name {
+  font-weight: 800;
+  font-size: 0.8125rem;
+}
+
+.lv-badge__desc {
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* --- Layar terkunci --- */
+.lv-locked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  border-radius: 20px;
+  background-color: var(--lv-surface);
+  text-align: center;
+}
+
+.lv-locked__icon {
+  color: var(--muted);
+}
+
+.lv-locked__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 4.5vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+}
+
+.lv-locked__text {
+  max-width: 32rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  /* Kartu "terkunci" berlatar terang (--lv-surface) di mode putih. */
+  color: var(--muted);
+}
+
+.lv-locked__text strong,
+.lv-locked__text em {
+  color: var(--fg);
+  font-style: normal;
+}
+
+/* --- Kuis: layar penuh --- */
+.lv-quiz {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: var(--bg);
+  color: var(--fg);
+  animation: lvFade 0.25s ease both;
+}
+
+@keyframes lvFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lv-quiz__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.lv-quiz__exit {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.lv-quiz__exit:hover {
+  color: var(--fg);
+}
+
+.lv-quiz__exit span {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.lv-quiz__progress {
+  position: relative;
+  flex: 1;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: rgba(20, 20, 20, 0.12);
+}
+
+.lv-quiz__progress-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--lv-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.25s ease;
+}
+
+.lv-quiz__meta {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.lv-quiz__combo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--lv-gold-text);
+}
+
+.lv-quiz__metro {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border); /* taste-skill-ignore: pil kendali kuis di kepala kuis */
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.lv-quiz__metro.is-on {
+  border-color: rgba(58, 58, 64, 0.5);
+  color: var(--lv-accent);
+}
+
+.lv-quiz__stage {
+  display: flex;
+  width: 100%;
+  max-width: 44rem;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 8rem;
+}
+
+.lv-quiz__info {
+  text-align: center;
+}
+
+.lv-quiz__title {
+  margin: 0;
+  font-size: clamp(1.4rem, 4.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.1;
+}
+
+.lv-quiz__sub {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* --- Panduan singkat sebelum mulai --- */
+.lv-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background-color: var(--lv-surface);
+}
+
+.lv-brief__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-brief__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  /* Kartu panduan berlatar terang (--lv-surface) di mode putih: teks gelap. */
+  color: var(--fg);
+}
+
+.lv-brief__list strong {
+  color: var(--fg);
+}
+
+.lv-brief__best {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  /* Emas pekat: --lv-gold terlalu pudar di atas kartu putih. */
+  color: var(--lv-gold-text);
+}
+
+.lv-brief__warn {
+  margin: 0;
+  font-size: 0.8125rem;
+  /* Emas pekat: --lv-gold terlalu pudar di atas kartu putih. */
+  color: var(--lv-gold-text);
+}
+
+.lv-brief .lv-btn {
+  align-self: flex-start;
+}
+
+/* --- Paranada kuis ---
+ * Border, sudut membulat, dan latar dipindah ke bingkai OrnateFrame
+ * (.lv-staff-frame) supaya bingkai ornamen duduk tepat di tepi kartu.
+ * Sisanya tetap: relative (overlay .lv-countdown) + overflow hidden. */
+.lv-staff-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.lv-staff {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lv-beat line {
+  stroke: rgba(20, 20, 20, 0.22);
+  stroke-width: 1;
+}
+
+.lv-beat text {
+  fill: var(--muted);
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+.lv-track-edge {
+  stroke: rgba(20, 20, 20, 0.2);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.lv-rest {
+  fill: rgba(20, 20, 20, 0.3);
+  font-size: 18px;
+}
+
+.lv-note ellipse {
+  fill: var(--fg);
+  transition: fill 0.18s ease;
+}
+
+.lv-note__stem {
+  stroke: var(--fg);
+  stroke-width: 1.6;
+  transition: stroke 0.18s ease;
+}
+
+.lv-note.is-perfect ellipse {
+  fill: var(--lv-accent);
+}
+
+.lv-note.is-perfect .lv-note__stem {
+  stroke: var(--lv-accent);
+}
+
+.lv-note.is-good ellipse {
+  fill: var(--lv-gold);
+}
+
+.lv-note.is-good .lv-note__stem {
+  stroke: var(--lv-gold);
+}
+
+.lv-note.is-miss ellipse {
+  fill: var(--lv-red);
+}
+
+.lv-note.is-miss .lv-note__stem {
+  stroke: var(--lv-red);
+}
+
+
+/* Playhead: digerakkan lewat transform (tanpa re-render React). */
+.lv-playhead {
+  stroke: var(--lv-blue);
+  stroke-width: 2.5;
+  transform: translate(44px, 0);
+  will-change: transform;
+}
+
+.lv-countdown {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3rem, 14vw, 6rem);
+  color: var(--fg);
+  animation: lvCountPop 0.25s ease both;
+}
+
+@keyframes lvCountPop {
+  from {
+    transform: scale(1.3);
+    opacity: 0.35;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- Kotak nada: papan tuts piano ---
+ * Lima tuts putih menyatu dalam satu papan (gap 0), ditimpa tuts hitam
+ * hiasan di batas C|D, D|E, dan F|G seperti papan piano sungguhan (E–F
+ * tidak punya tuts hitam). Pemisah antar tuts sengaja 2px — cukup untuk
+ * dibaca sebagai garis tuts, bukan garis dekoratif 1px. */
+.lv-pads {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  overflow: hidden;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background-color: var(--lv-surface);
+}
+
+/* Tuts hitam: murni bentuk (aria-hidden di komponen), tanpa jalur klik. */
+.lv-pads__sharp {
+  position: absolute;
+  top: 0;
+  width: 11%;
+  height: 52%;
+  transform: translateX(-50%);
+  border-radius: 0 0 5px 5px;
+  background-color: var(--fg);
+  pointer-events: none;
+}
+
+.lv-pad {
+  position: relative;
+  display: flex;
+  min-height: 4.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 0.7rem;
+  border: 0;
+  border-left: 2px solid var(--border);
+  background-color: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.07s ease, background-color 0.15s ease;
+}
+
+/* Tuts paling kiri: tepi papan, tanpa pemisah. */
+.lv-pad:first-child {
+  border-left: 0;
+}
+
+.lv-pad:active:not(:disabled) {
+  background-color: rgba(20, 20, 20, 0.06);
+  transform: translateY(1px);
+}
+
+.lv-pad:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Cincin denyut "benar" (dipakai tuts saat jawaban tepat / kursor masuk).
+ * Digambar di dalam tuts: papan tuts memotong apa pun yang keluar tepi. */
+.lv-pad::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 3px solid var(--lv-accent);
+  border-radius: 10px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lv-pad.is-ok {
+  background-color: rgba(58, 58, 64, 0.16);
+  animation: lvPadOk 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+
+.lv-pad.is-ok::after {
+  animation: lvPadRing 0.5s ease-out both;
+}
+
+/* Denyut "benar": kotak tertekan lalu memantul, cincin grafit melebar. */
+@keyframes lvPadOk {
+  0% {
+    transform: translateY(3px) scale(0.94);
+  }
+  55% {
+    transform: translateY(0) scale(1.03);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes lvPadRing {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.16);
+  }
+}
+
+.lv-pad.is-off {
+  background-color: rgba(255, 75, 75, 0.16);
+}
+
+/* Salah: cincin merah, sepasang dengan cincin grafit saat benar. */
+.lv-pad.is-off::after {
+  border-color: var(--lv-red);
+  animation: lvPadRing 0.5s ease-out both;
+}
+
+/* Satu-satunya label di muka tuts: nama notnya (mis. C4). Huruf besar dan
+ * nomor pintasan tetap dibacakan lewat aria-label tombol (lihat NotePads). */
+.lv-pad__note {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.lv-hint {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* --- Feedback tray --- */
+.lv-tray {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 70;
+  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
+  border-top: 2px solid var(--border);
+  background-color: rgba(10, 10, 10, 0.96);
+  transform: translateY(110%);
+  /* Muncul â†’ diam â†’ hilang. Durasi diset dari komponen (animationDuration). */
+  animation: lvTray 1.9s ease both;
+}
+
+@keyframes lvTray {
+  0% {
+    transform: translateY(110%);
+  }
+  12% {
+    transform: translateY(0);
+  }
+  82% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(110%);
+  }
+}
+
+.lv-tray.is-perfect {
+  border-top-color: var(--lv-accent);
+}
+
+.lv-tray.is-perfect .lv-tray__title {
+  color: var(--lv-accent);
+}
+
+.lv-tray.is-good {
+  border-top-color: var(--lv-gold);
+}
+
+.lv-tray.is-good .lv-tray__title {
+  color: var(--lv-gold);
+}
+
+.lv-tray.is-miss {
+  border-top-color: var(--lv-red);
+}
+
+.lv-tray.is-miss .lv-tray__title {
+  color: var(--lv-red);
+}
+
+.lv-tray.is-info {
+  border-top-color: var(--lv-blue);
+}
+
+.lv-tray.is-info .lv-tray__title {
+  color: var(--lv-blue);
+}
+
+.lv-tray__inner {
+  max-width: 44rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lv-tray__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.lv-tray__detail {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* --- Layar hasil --- */
+.lv-result {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background-color: rgba(5, 5, 5, 0.9);
+  animation: lvFade 0.2s ease both;
+}
+
+.lv-result__card {
+  display: flex;
+  width: 100%;
+  max-width: 28rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 2rem 1.5rem;
+  border-radius: 24px;
+  background-color: var(--lv-surface);
+  text-align: center;
+  animation: lvCardIn 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+@keyframes lvCardIn {
+  from {
+    transform: translateY(18px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.lv-result__kicker {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-result__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 6vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+}
+
+.lv-result__stars {
+  gap: 0.35rem;
+  margin: 0.25rem 0;
+}
+
+.lv-result__stars .lv-star {
+  width: 2.125rem;
+  height: 2.125rem;
+}
+
+.lv-result__stars .lv-star.is-on {
+  animation: lvStarPop 0.35s ease both;
+}
+
+.lv-result__stars .lv-star.is-on:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.lv-result__stars .lv-star.is-on:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.lv-result__stars .lv-star.is-on:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes lvStarPop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.lv-result__crown {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--lv-gold-text);
+}
+
+.lv-result__hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.lv-result__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.lv-result__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.5rem;
+  background-color: rgba(20, 20, 20, 0.04);
+  border-radius: 12px;
+}
+
+.lv-result__stat dt {
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-result__stat dd {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.lv-result__stat:nth-child(2) dd {
+  color: var(--lv-accent);
+}
+
+.lv-result__stat:nth-child(3) dd {
+  color: var(--lv-gold-text);
+}
+
+.lv-result__stat:nth-child(4) dd {
+  color: var(--lv-red-text);
+}
+
+.lv-result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+/* --- Popup achievement --- */
+.lv-achievement {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  z-index: 90;
+  display: flex;
+  max-width: calc(100% - 2rem);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 200, 0, 0.4); /* taste-skill-ignore: toast pencapaian: panel mengambang di atas kuis */
+  border-radius: 16px;
+  background-color: rgba(20, 18, 8, 0.96);
+  /* Panel mengambang di atas kuis â€” satu-satunya bayangan yang diizinkan aturan. */ box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6); /* taste-skill-ignore */
+  transform: translateX(-50%);
+  animation: lvToastIn 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+@keyframes lvToastIn {
+  from {
+    transform: translate(-50%, -130%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.lv-achievement__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.375rem;
+  height: 2.375rem;
+  border-radius: 12px;
+  background-color: rgba(255, 200, 0, 0.14);
+  color: var(--lv-gold-text);
+}
+
+.lv-achievement__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.lv-achievement__label {
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--lv-gold-text);
+}
+
+.lv-achievement__name {
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.lv-achievement__close {
+  padding: 0 0.15rem;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lv-achievement__close:hover {
+  color: var(--fg);
+}
+
+/* ============================================================
+   LEVEL (tambahan): daftar materi, pengenalan, kuis pilihan ganda
+   ============================================================ */
+
+/* --- Tombol kembali di atas path materi --- */
+.lv-path__bar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Tag pengenalan pada node level --- */
+.lv-node__tag {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--lv-blue-text);
+}
+
+.lv-node__tag[data-intro-done='true'] {
+  color: var(--lv-accent);
+}
+
+/* --- Daftar materi --- */
+.lv-materi {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.lv-materi__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv-materi__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border); /* taste-skill-ignore: kartu materi: warna garis menandai selesai */
+  border-radius: 20px;
+  background-color: var(--lv-surface);
+  transition: border-color 0.25s ease, transform 0.09s ease;
+}
+
+.lv-materi__card:not(.is-locked):hover {
+  border-color: rgba(20, 20, 20, 0.32);
+}
+
+/* Fisika tekan: kartu turun sedikit saat ditekan, lalu naik lagi. */
+.lv-materi__card:not(.is-locked):active {
+  transform: translateY(2px);
+}
+
+.lv-materi__card.is-locked {
+  opacity: 0.55;
+}
+
+.lv-materi__card.is-done {
+  border-color: rgba(58, 58, 64, 0.35);
+}
+
+.lv-materi__button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lv-materi__button:disabled {
+  cursor: not-allowed;
+}
+
+.lv-materi__button:focus-visible {
+  outline: 2px solid var(--lv-blue);
+  outline-offset: 4px;
+}
+
+.lv-materi__num {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 14px;
+  background-color: var(--lv-surface-2);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.lv-materi__card.is-done .lv-materi__num {
+  background-color: var(--lv-accent);
+  color: var(--accent-ink);
+}
+
+.lv-materi__text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lv-materi__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3.4vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.lv-materi__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-materi__progress {
+  color: var(--lv-gold-text);
+}
+
+/* Daftar materi adalah container: kartunya menyesuaikan lebar induknya, bukan
+   lebar layar — jadi bentuknya tetap benar kalau nanti dipasang di kolom sempit.
+   Ditulis setelah aturan dasar di atas supaya menang saat sama-sama cocok. */
+@container (min-width: 34rem) {
+  .lv-materi__card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  .lv-materi__button {
+    width: auto;
+    flex: 1;
+  }
+
+  .lv-materi__foot {
+    flex: none;
+    justify-content: flex-end;
+    padding-top: 0;
+  }
+}
+
+/* Bintang dibuat lebih menonjol daripada angkanya supaya pencapaian langsung
+   terbaca: glyph lebih besar + kilau emas tipis. */
+.lv-materi__star {
+  width: 0.95em;
+  height: 0.95em;
+  color: var(--lv-gold-text);
+  vertical-align: -0.12em;
+}
+
+.lv-materi__lock {
+  margin-left: auto;
+}
+
+.lv-materi__badge {
+  margin-left: auto;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background-color: rgba(58, 58, 64, 0.16);
+  color: var(--lv-accent);
+}
+
+/* --- Maskot pendamping pojok kanan bawah (daftar materi) ---
+   Menempel layar supaya terasa menemani; maskot di KANAN, bubble di kirinya
+   (row-reverse) sehingga ekor bubble mengarah ke maskot dan animasi masuknya
+   tumbuh kananâ†’kiri. pointer-events:none agar tidak menghalangi klik kartu/HUD.
+   Selektor digabung (.mentor-guide.lv-materi__guide) karena aturan dasar .mentor-guide
+   berada lebih bawah di berkas ini, tanpa itu align-items & gap-nya menang. */
+.mentor-guide.lv-materi__guide {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 3.25rem;
+  z-index: 20;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+/* 160px = 5Ã— grid 32px aset SVG â†’ piksel tetap tajam. */
+.lv-materi__guide .mentor {
+  width: 160px;
+  height: 160px;
+}
+
+.lv-materi__guide .mentor-bubble {
+  max-width: 18rem;
+}
+
+@media (max-width: 639px) {
+  /* Layar sempit: bubble di atas maskot supaya tidak melebar ke samping. */
+  .mentor-guide.lv-materi__guide {
+    right: 0.75rem;
+    bottom: 3rem;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+
+  .lv-materi__guide .mentor {
+    width: 96px;
+    height: 96px;
+  }
+
+  .lv-materi__guide .mentor-bubble {
+    max-width: 15rem;
+  }
+}
+
+/* --- Rangka halaman pengenalan --- */
+.lv-intro__kicker {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--lv-blue-text);
+}
+
+.lv-intro__foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.lv-intro__readout {
+  margin: 0;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.lv-intro__readout strong {
+  font-size: 1.05rem;
+  color: var(--lv-blue-text);
+}
+
+/* Membantu pengenalan (fullscreen) agar kartu staff tetap muat tanpa scroll
+ * pada viewport 1280x900 (mentor-verify). Jangan sentuh kuis reguler. */
+.lv-intro .lv-quiz__stage {
+  gap: 0.8rem;
+  padding-bottom: 4rem;
+}
+
+.lv-intro .ornate-frame {
+  /* Vertikal lebih rapat untuk menghemat tinggi; horizontal tetap nyaman. */
+  --of-pad: clamp(14px, 2vw, 26px);
+}
+
+.lv-intro__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv-intro__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.5rem 0.25rem;
+  border-radius: 12px;
+  background-color: var(--lv-surface);
+}
+
+.lv-intro__chip.is-active {
+  border-color: var(--lv-blue-text);
+  background-color: rgba(28, 176, 246, 0.14);
+}
+
+.lv-intro__chip-key {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.lv-intro__chip-sub {
+  font-family: var(--font-display);
+  font-size: 0.4375rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* --- Kartu nilai not (pengenalan Materi 2) --- */
+.lv-intro__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lv-intro__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lv-intro__group-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv-card {
+  display: flex;
+  width: 100%;
+  min-height: 8.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.4rem;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background-color: var(--lv-surface);
+  color: var(--fg);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.08s ease;
+}
+
+.lv-card:hover {
+  border-color: rgba(20, 20, 20, 0.32);
+}
+
+.lv-card:active {
+  transform: translateY(2px);
+}
+
+.lv-card.is-active {
+  border-color: var(--lv-blue-text);
+  background-color: rgba(28, 176, 246, 0.14);
+}
+
+.lv-card__value {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.lv-card__sub {
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.lv-intro__detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 20px;
+  background-color: var(--lv-surface);
+  text-align: center;
+}
+
+.lv-intro__detail-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.lv-intro__detail-sub {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* --- Bar panjang nilai (ketukan) --- */
+.lv-beatbar {
+  position: relative;
+  height: 2.5rem;
+  margin-top: 0.6rem;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: rgba(20, 20, 20, 0.04);
+}
+
+.lv-beatbar__fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background-color: rgba(28, 176, 246, 0.35);
+  animation-name: lvBeatFill;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+@keyframes lvBeatFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.lv-beatbar__tick {
+  position: absolute;
+  top: 0.35rem;
+  padding-left: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  color: var(--muted);
+}
+
+/* --- Metronom pengenalan Materi 3 --- */
+.lv-intro__metro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lv-metro {
+  position: relative;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  overflow: hidden;
+  padding: 0.9rem;
+  border-radius: 20px;
+  background-color: var(--lv-surface);
+}
+
+.lv-metro__playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background-color: var(--lv-blue-text);
+  will-change: transform;
+}
+
+.lv-metro__beat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4rem;
+  border: 1px solid var(--border); /* taste-skill-ignore: ketukan aktif: warna garis menandai posisinya */
+  border-radius: 14px;
+  background-color: var(--lv-surface-2);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--muted);
+  transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.lv-metro__beat.is-on {
+  border-color: var(--lv-blue-text);
+  background-color: var(--lv-blue-text);
+  color: var(--accent-ink);
+}
+
+/* --- Simbol not/istirahat (SVG) --- */
+.lv-glyph {
+  display: block;
+}
+
+.lv-glyph__head {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 3;
+}
+
+.lv-glyph__head.is-filled {
+  fill: var(--fg);
+  stroke: var(--fg);
+}
+
+.lv-glyph__stem {
+  stroke: var(--fg);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.lv-glyph__flag {
+  fill: var(--fg);
+}
+
+.lv-glyph__line {
+  stroke: rgba(20, 20, 20, 0.32);
+  stroke-width: 1.6;
+}
+
+.lv-glyph__block {
+  fill: var(--fg);
+}
+
+.lv-glyph__squiggle {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lv-glyph-stage {
+  display: flex;
+  min-height: 11rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 20px;
+  background-color: rgba(20, 20, 20, 0.03);
+}
+
+/* --- Paranada satu not (Materi 1) --- */
+.lv-staff--single {
+  min-height: 9rem;
+}
+
+/* Kunci G pada paranada Materi 1 (path SVG â€” lihat ClefGlyph), bukan huruf "G". */
+.lv-staff__clef {
+  fill: var(--fg);
+  opacity: 0.9;
+}
+
+.lv-staff__note ellipse {
+  fill: var(--fg);
+}
+
+/**
+ * Not menyala (pengenalan Materi 1): kursor masuk kotak nada â†’ sorot grafit
+ * plus pop singkat. Transform dipasang di grup not (bukan ellipse) supaya
+ * atribut rotate(-16 â€¦) milik ellipse tidak tertimpa; titik putarnya
+ * dikirim inline dari komponen (lihat PositionStaff).
+ */
+.lv-staff__note.is-lit {
+  transform-box: view-box;
+  animation: lvNoteLit 0.36s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+
+
+.lv-staff__note.is-lit .lv-note__stem {
+  stroke: var(--lv-accent);
+}
+
+@keyframes lvNoteLit {
+  from {
+    transform: scale(1.3);
+    opacity: 0.35;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.lv-staff__marker {
+  fill: none;
+  stroke: var(--lv-blue);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+  opacity: 0.8;
+}
+
+.lv-staff__marker.is-lit {
+  stroke: var(--lv-accent);
+  animation: lvMarkerGlow 1.2s var(--ease-soft) infinite;
+}
+
+@keyframes lvMarkerGlow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* --- Pilihan ganda (kuis nilai not) --- */
+.lv-answers {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+.lv-answer {
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background-color: var(--lv-surface);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.08s ease;
+}
+
+.lv-answer:hover:not(:disabled) {
+  border-color: rgba(20, 20, 20, 0.35);
+}
+
+.lv-answer:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.lv-answer:disabled {
+  cursor: default;
+}
+
+.lv-answer.is-correct {
+  border-color: var(--lv-accent);
+  background-color: rgba(58, 58, 64, 0.16);
+}
+
+.lv-answer.is-wrong {
+  border-color: var(--lv-red-text);
+  background-color: rgba(255, 75, 75, 0.16);
+}
+
+/* --- Rincian hasil kuis (3 kolom: skor / benar / salah) --- */
+.lv-result__stats.is-quiz {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.lv-result__stats.is-quiz .lv-result__stat:nth-child(2) dd {
+  color: var(--lv-accent);
+}
+
+.lv-result__stats.is-quiz .lv-result__stat:nth-child(3) dd {
+  color: var(--lv-red-text);
+}
+
+/* --- Responsif --- */
+@media (min-width: 640px) {
+  .lv-badges__list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lv-pad {
+    min-height: 5.25rem;
+  }
+
+  .lv-quiz__header {
+    padding: 1.25rem 2rem;
+  }
+
+  .lv-answers {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lv-cards {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .lv-path__list::before {
+    display: none;
+  }
+
+  .lv-path__item.is-left,
+  .lv-path__item.is-right {
+    justify-content: center;
+  }
+
+  .lv-path__item.is-right .lv-node {
+    flex-direction: row;
+    padding: 0.7rem 1.1rem 0.7rem 0.7rem;
+    text-align: left;
+  }
+
+  .lv-node {
+    width: 100%;
+  }
+}
+
+/* Gerak berkurang: matikan animasi khas Level (playhead tetap bergerak). */
+@media (prefers-reduced-motion: reduce) {
+  .lv-quiz,
+  .lv-countdown,
+  .lv-result,
+  .lv-result__card,
+  .lv-result__stars .lv-star.is-on,
+  .lv-achievement {
+    animation: none;
+  }
+
+  /* Bar panjang nilai langsung tampil penuh tanpa animasi mengisi. */
+  .lv-beatbar__fill {
+    animation: none;
+    transform: scaleX(1);
+  }
+
+  .lv-card,
+  .lv-answer,
+  .lv-materi__card,
+  .lv-metro__beat {
+    transition: none;
+  }
+
+  /* Kilau "benar"/"salah" tetap tampil statis: tanpa denyut/pop, warna tetap ada. */
+  .lv-pad.is-ok,
+  .lv-pad.is-ok::after,
+  .lv-pad.is-off::after,
+  .lv-staff__note.is-lit,
+  .lv-staff__marker.is-lit {
+    animation: none;
+  }
+
+  /* Tray tampil tanpa animasi (langsung terlihat selama pesan aktif). */
+  .lv-tray {
+    animation: none;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   PANEL ISI PRODUK
+   Ruang panel yang dulu diisi kanvas dekoratif kini memperlihatkan
+   isi produk yang sebenarnya: panel Manifesto memuat isi frame
+   halaman pengenalan (lihat introArt.tsx), babak Showcase memuat
+   tiga tangkapan layar aplikasi sendiri.
+   Tetap datar: wadahnya bidang penuh tanpa bayangan, tanpa gradien,
+   tanpa garis 1px.
+   ============================================================ */
+
+/* Wadah kanvas: bidang penuh, sudut membulat, tanpa garis tepi. */
+.visual-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background-color: var(--lv-surface);
+}
+/* ============================================================
+   MASKOT + BALON UCAPAN
+   Karakter vektor (bukan pixel): bentuknya datar tanpa gradien dan
+   tanpa garis 1px, siluetnya dibangun dari isian warna. Asetnya SVG di
+   src/assets/mentor/, disisipkan inline agar bagiannya bisa
+   dianimasikan CSS: badan naik-turun, mata berkedip, mulut bergerak,
+   syal berkibar. Teks tetap elemen DOM (bukan gambar) supaya terbaca
+   screen reader.
+   ============================================================ */
+.mentor-guide {
+  display: flex;
+  align-items: center;
+  /* Jarak cukup longgar untuk menampung ekor balon (10px) yang menjorok ke kiri. */
+  gap: 1.05rem;
+}
+
+/* Baris maskot + bubble pada pengenalan level (judul ikut di kanan). */
+.lv-intro .lv-quiz__info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.lv-quiz__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.lv-intro .lv-quiz__sub {
+  margin: 0;
+}
+
+.mentor {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  transform-origin: center bottom;
+  animation: mentorBob 2.6s var(--ease-soft) infinite;
+}
+
+.mentor svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes mentorBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Mata berkedip singkat (transform-box: fill-box, sumbunya kotak matanya). */
+.mentor .mentor-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mentorBlink 4.6s var(--ease-soft) infinite;
+}
+
+@keyframes mentorBlink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  93%,
+  96% {
+    transform: scaleY(0.12);
+  }
+}
+
+/* Mulut bergerak saat maskot sedang "bicara": pose talk, atau selama teks di
+   bubble masih diketik (kelas .is-typing dipasang Typewriter). Geraknya halus,
+   tidak lagi berjenjang. */
+.mentor[data-pose='talk'] .mentor-mouth,
+.mentor-guide:has(.mentor-type.is-typing) .mentor .mentor-mouth,
+.lv-quiz__info:has(.mentor-type.is-typing) .mentor .mentor-mouth {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mentorTalk 0.34s var(--ease-soft) infinite;
+}
+
+@keyframes mentorTalk {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.35);
+  }
+}
+
+/* Syal (bendera not) berkibar pelan; porosnya di pangkal tangkai. */
+.mentor .mentor-flag {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: mentorFlag 3.4s var(--ease-soft) infinite;
+}
+
+@keyframes mentorFlag {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-7deg);
+  }
+}
+
+/* Balon ucapan datar: sudut membulat + satu ekor. Isinya tinta gelap supaya
+   teks terang di atasnya terbaca; bidangnya dipisahkan dari latar oleh nada
+   warna, bukan oleh bayangan. */
+.mentor-bubble {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 1.15rem;
+  border-radius: 18px;
+  background-color: #14161a;
+  /* Animasi default (di-override oleh modifier --left/--right). */
+  animation: mentorPop 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --- Variasi arah: animasi tumbuh dari sisi maskot --- */
+
+/* Maskot di KIRI, bubble tumbuh kiri ke kanan (transform-origin left). */
+.mentor-bubble--left {
+  transform-origin: left center;
+  animation: mentorBubbleGrowLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Maskot di KANAN, bubble tumbuh kanan ke kiri (transform-origin right). */
+.mentor-bubble--right {
+  transform-origin: right center;
+  animation: mentorBubbleGrowRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Tumbuh dari sisi maskot: melebar lebih dulu, lalu menyesuaikan tinggi. */
+@keyframes mentorBubbleGrowLeft {
+  0% {
+    opacity: 0;
+    transform: scaleX(0) scaleY(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: scaleX(0.6) scaleY(1.05);
+  }
+  70% {
+    transform: scaleX(0.95) scaleY(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes mentorBubbleGrowRight {
+  0% {
+    opacity: 0;
+    transform: scaleX(0) scaleY(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: scaleX(0.6) scaleY(1.05);
+  }
+  70% {
+    transform: scaleX(0.95) scaleY(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+/* Animasi lama (fallback / reduced motion). */
+@keyframes mentorPop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Ekor balon: persegi diputar yang separuhnya tertutup bidang balon itu
+   sendiri, jadi yang terlihat hanya segitiga yang menjorok ke arah maskot.
+   Warna dan sudutnya sama dengan balon supaya menyatu. --- */
+.mentor-bubble::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  background-color: #14161a;
+  pointer-events: none;
+}
+
+.mentor-bubble--left::before,
+.mentor-bubble:not(.mentor-bubble--left):not(.mentor-bubble--right)::before {
+  left: -8px;
+  border-radius: 5px 0 0 0;
+  transform: rotate(-45deg);
+}
+
+.mentor-bubble--right::before {
+  right: -8px;
+  border-radius: 0 0 5px 0;
+  transform: rotate(45deg);
+}
+
+.mentor-bubble__text {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mentor-bubble__text > * {
+  margin: 0;
+}
+
+/* Deskripsi level dan narasi Introduction memakai muka teks badan juga; hanya
+   ukurannya yang dibedakan. Warnanya tetap terang karena isi balon selalu gelap,
+   teks gelap akan tenggelam di latar balon, baik di Introduction maupun daftar
+   materi/level yang juga memakai kelas .intro-page. */
+.mentor-bubble .lv-quiz__sub,
+.intro-page .mentor-bubble .mentor-bubble__text {
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mentor-bubble .lv-quiz__sub {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Narasi Introduction sedikit lebih besar dari deskripsi level. */
+.intro-page .mentor-bubble .mentor-bubble__text {
+  font-size: clamp(0.9375rem, 2.2vw, 1.125rem);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 639px) {
+  .mentor {
+    width: 64px;
+    height: 64px;
+  }
+
+  .mentor-bubble {
+    padding: 0.7rem 0.95rem;
+  }
+
+  .mentor-bubble .lv-quiz__sub {
+    font-size: 0.8125rem;
+  }
+}
+
+/* --- Teks mesin tik di dalam bubble ---
+   Seluruh kalimat sudah ada di DOM sejak awal (hanya opacity-nya 0) sehingga
+   tata letak tidak bergeser saat "diketik" dan screen reader tetap membaca
+   kalimat utuhnya. */
+.mentor-type__ch {
+  opacity: 0;
+}
+
+.mentor-type__ch.is-shown {
+  opacity: 1;
+  animation: mentorCharIn 0.16s ease-out both;
+}
+
+@keyframes mentorCharIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Kursor: garis tipis yang berkedip halus; lebarnya 0 supaya tidak menggeser
+   teks saat berpindah antar huruf. */
+.mentor-type__caret {
+  position: relative;
+  display: inline-block;
+  width: 0;
+  height: 1em;
+  vertical-align: -0.12em;
+}
+
+.mentor-type__caret::before {
+  content: '';
+  position: absolute;
+  top: 0.12em;
+  left: 1px;
+  width: 2px;
+  height: 0.82em;
+  border-radius: 1px;
+  background-color: rgba(255, 255, 255, 0.75);
+  animation: mentorCaret 1.05s ease-in-out infinite;
+}
+
+@keyframes mentorCaret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Gerak berkurang: maskot, bubble, dan teks tampil statis (teks langsung utuh). */
+@media (prefers-reduced-motion: reduce) {
+  .mentor,
+  .mentor .mentor-eyes,
+  .mentor .mentor-mouth,
+  .mentor .mentor-flag,
+  .mentor-bubble,
+  .mentor-type__caret,
+  .mentor-type__caret::before {
+    animation: none;
+  }
+
+  .mentor-type__ch,
+  .mentor-type__ch.is-shown {
+    opacity: 1;
+    animation: none;
+  }
+
+  .mentor-type__caret {
+    display: none;
+  }
+}
+
+/* ============================================================
+   LAYAR PERTAMA: MASKOT + BALON UCAPAN
+   Ruang di kanan judul diisi maskot beserta balon ucapannya, bukan
+   gambar buatan sendiri. Tagline diucapkan maskot; teks balon memakai
+   muka huruf badan (Manrope) karena kalimatnya panjang dan harus
+   terbaca nyaman.
+   ============================================================ */
+.hero-guide {
+  /* Blok maskot + balon ditempel ke tepi kanan kolom agar sejajar dengan tepi
+     kanan judul; kolom kiri mengurus aksi utama. Di layar sempit balon mengisi
+     seluruh lebar, jadi pengaturan ini tidak berpengaruh. */
+  justify-content: flex-end;
+  gap: 1.5rem;
+}
+
+.hero-guide .mentor {
+  width: 160px;
+  height: 160px;
+}
+
+/* Balon dibatasi supaya panjang barisnya tetap nyaman dibaca. */
+.hero-guide .mentor-bubble {
+  max-width: 34rem;
+}
+
+.hero-guide .mentor-bubble__text {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 639px) {
+  .hero-guide {
+    gap: 1rem;
+  }
+
+  .hero-guide .mentor {
+    width: 96px;
+    height: 96px;
+  }
+
+  .hero-guide .mentor-bubble__text {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================================
+   BABAK MANIFESTO: PANEL ISI FRAME PENGENALAN
+   Panel memuat isi frame halaman Introduction (paranada → kunci G
+   → not) yang bergantian dengan fade out lalu fade in. Ketiganya
+   menumpuk di tempat yang sama; hanya opacity yang berubah, jadi
+   tata letak tidak bergeser sedikit pun.
+   ============================================================ */
+.manifesto-frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  transition: opacity 450ms var(--ease-soft);
+}
+
+@media (min-width: 1024px) {
+  .manifesto-frame {
+    padding: 2rem;
+  }
+}
+
+/* Isi frame diskalakan mengikuti tinggi panel: seluruh paranada selalu utuh,
+   tidak pernah terpotong seperti object-cover. */
+.paranada-svg.manifesto-art {
+  height: 100%;
+}

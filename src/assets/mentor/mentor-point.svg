@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" focusable="false" aria-hidden="true">
+  <defs>
+    <clipPath id="mentorBodyPoint">
+      <ellipse cx="44" cy="60" rx="25" ry="19" transform="rotate(-14 44 60)"/>
+    </clipPath>
+  </defs>
+
+  <!-- Syal (bendera not): digambar paling belakang supaya pangkalnya tersembunyi
+       di balik tangkai dan badan. -->
+  <g class="mentor-flag">
+    <path d="M65 12C78 16 84 24 80 36 79 26 71 18 63 15Z" fill="#14161a" stroke="#14161a" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M65 12C78 16 84 24 80 36 79 26 71 18 63 15Z" fill="#efd3da"/>
+  </g>
+
+  <g class="mentor-feet">
+    <rect x="29" y="78" width="13" height="9" rx="4.5" fill="#14161a"/>
+    <rect x="46" y="78" width="13" height="9" rx="4.5" fill="#14161a"/>
+  </g>
+
+  <rect x="62" y="10" width="9" height="46" rx="4.5" fill="#14161a"/>
+
+  <!-- Lengan menunjuk: satu lengan ke kanan, ke arah balon ucapannya. -->
+  <g class="mentor-arm">
+    <path d="M62 56 84 50" fill="none" stroke="#14161a" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="86" cy="49" r="6.5" fill="#e9e9ee" stroke="#14161a" stroke-width="3"/>
+  </g>
+
+  <!-- Badan: kepala not. Siluet gelap di bawah, bidang terang di atasnya;
+       nada gelap hanya tersisa sebagai bulan sabit di tepi kiri-bawah, jadi
+       bentuknya tetap terbaca sebagai satu bidang datar. -->
+  <ellipse cx="44" cy="60" rx="27.5" ry="21.5" transform="rotate(-14 44 60)" fill="#14161a"/>
+  <g clip-path="url(#mentorBodyPoint)">
+    <ellipse cx="44" cy="60" rx="25" ry="19" fill="#d5d5e0"/>
+    <ellipse cx="51" cy="54" rx="25" ry="19" fill="#e9e9ee"/>
+  </g>
+
+  <g transform="rotate(-14 44 60)">
+    <g class="mentor-eyes">
+      <circle cx="35" cy="55.5" r="6.2" fill="#ffffff" stroke="#14161a" stroke-width="2.6"/>
+      <circle cx="35" cy="55.5" r="2.5" fill="#14161a"/>
+      <circle cx="53" cy="55.5" r="6.2" fill="#ffffff" stroke="#14161a" stroke-width="2.6"/>
+      <circle cx="53" cy="55.5" r="2.5" fill="#14161a"/>
+    </g>
+    <g class="mentor-mouth">
+      <rect x="39" y="65" width="10" height="4.6" rx="2.3" fill="#14161a"/>
+    </g>
+  </g>
+</svg>

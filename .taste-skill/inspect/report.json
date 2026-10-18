@@ -1,0 +1,787 @@
+{
+ "url": "http://127.0.0.1:8123/#/level/m3",
+ "at": "2026-10-17T10:55:27.713Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.21
+   ],
+   "motion": {
+    "elements": 58,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 57,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 900,
+     "screens": 1,
+     "words": 27,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 16,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": []
+    },
+    "hero": {
+     "text": "Level masih terkunci",
+     "words": 3,
+     "chars": 20,
+     "lines": 1,
+     "size": 36,
+     "vw": 2.5,
+     "font": "Archivo",
+     "weight": 800,
+     "tracking": -0.05,
+     "leading": 1.5,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.23,
+     "top": 202,
+     "tag": "h2",
+     "kind": "heading"
+    },
+    "h1": null,
+    "headings": [
+     {
+      "text": "Level masih terkunci",
+      "words": 3,
+      "chars": 20,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "Archivo",
+      "weight": 800,
+      "tracking": -0.05,
+      "leading": 1.5,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.23,
+      "top": 202,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Archivo",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      15,
+      17,
+      36
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": {
+      "font": "Archivo",
+      "size": 15,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 8
+     },
+     "measureChars": 68,
+     "max": {
+      "size": 36,
+      "vw": 2.5,
+      "font": "Archivo",
+      "text": "Level masih terkunci"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.86,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#c3cbe5",
+     "bodyBgHsl": {
+      "h": 226,
+      "s": 0.4,
+      "l": 0.83
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#c3cbe5",
+       "top": 0,
+       "hsl": {
+        "h": 226,
+        "s": 0.4,
+        "l": 0.83
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4a5068",
+       "share": 0.6
+      },
+      {
+       "color": "#141414",
+       "share": 0.3
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.11
+      }
+     ],
+     "button": {
+      "bg": "#3a3a40",
+      "hsl": {
+       "h": 240,
+       "s": 0.05,
+       "l": 0.24
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 14,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Kerjakan Introduction"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 1,
+     "boxRadius": 20,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 68,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "archivo"
+    ]
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 751,
+   "height": 469,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.67,
+    0.67
+   ],
+   "motion": {
+    "elements": 39,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 38,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 751,
+     "h": 469
+    },
+    "page": {
+     "height": 557,
+     "screens": 1.2,
+     "words": 27,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 11,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": []
+    },
+    "hero": {
+     "text": "Level masih terkunci",
+     "words": 3,
+     "chars": 20,
+     "lines": 1,
+     "size": 33.8,
+     "vw": 4.5,
+     "font": "Archivo",
+     "weight": 800,
+     "tracking": -0.05,
+     "leading": 1.5,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.42,
+     "top": 202,
+     "tag": "h2",
+     "kind": "heading"
+    },
+    "h1": null,
+    "headings": [
+     {
+      "text": "Level masih terkunci",
+      "words": 3,
+      "chars": 20,
+      "lines": 1,
+      "size": 33.8,
+      "vw": 4.5,
+      "font": "Archivo",
+      "weight": 800,
+      "tracking": -0.05,
+      "leading": 1.5,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.42,
+      "top": 202,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Archivo",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      15,
+      17,
+      34
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": {
+      "font": "Archivo",
+      "size": 15,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 8
+     },
+     "measureChars": 68,
+     "max": {
+      "size": 33.8,
+      "vw": 4.5,
+      "font": "Archivo",
+      "text": "Level masih terkunci"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.86,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#c3cbe5",
+     "bodyBgHsl": {
+      "h": 226,
+      "s": 0.4,
+      "l": 0.83
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#c3cbe5",
+       "top": 0,
+       "hsl": {
+        "h": 226,
+        "s": 0.4,
+        "l": 0.83
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 104,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4a5068",
+       "share": 0.6
+      },
+      {
+       "color": "#141414",
+       "share": 0.3
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.11
+      }
+     ],
+     "button": {
+      "bg": "#3a3a40",
+      "hsl": {
+       "h": 240,
+       "s": 0.05,
+       "l": 0.24
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 14,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Kerjakan Introduction"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 1,
+     "boxRadius": 20,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 68,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "archivo"
+    ]
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.4
+   ],
+   "motion": {
+    "elements": 26,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 25,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 844,
+     "screens": 1,
+     "words": 27,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 8,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": []
+    },
+    "hero": {
+     "text": "Level masih terkunci",
+     "words": 3,
+     "chars": 20,
+     "lines": 1,
+     "size": 24,
+     "vw": 6.2,
+     "font": "Archivo",
+     "weight": 800,
+     "tracking": -0.05,
+     "leading": 1.5,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.57,
+     "top": 186,
+     "tag": "h2",
+     "kind": "heading"
+    },
+    "h1": null,
+    "headings": [
+     {
+      "text": "Level masih terkunci",
+      "words": 3,
+      "chars": 20,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Archivo",
+      "weight": 800,
+      "tracking": -0.05,
+      "leading": 1.5,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.57,
+      "top": 186,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Archivo",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      15,
+      17,
+      24
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": {
+      "font": "Archivo",
+      "size": 15,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 8
+     },
+     "measureChars": 40,
+     "max": {
+      "size": 24,
+      "vw": 6.2,
+      "font": "Archivo",
+      "text": "Level masih terkunci"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.86,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#c3cbe5",
+     "bodyBgHsl": {
+      "h": 226,
+      "s": 0.4,
+      "l": 0.83
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#c3cbe5",
+       "top": 0,
+       "hsl": {
+        "h": 226,
+        "s": 0.4,
+        "l": 0.83
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 88,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4a5068",
+       "share": 0.6
+      },
+      {
+       "color": "#141414",
+       "share": 0.3
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.11
+      }
+     ],
+     "button": {
+      "bg": "#3a3a40",
+      "hsl": {
+       "h": 240,
+       "s": 0.05,
+       "l": 0.24
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 14,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Kerjakan Introduction"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 1,
+     "boxRadius": 20,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 52,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "archivo"
+    ]
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "body-size",
+   "width": 1440,
+   "message": "Body text is 15px.",
+   "fix": "Body copy 16–20px.",
+   "alsoAt": [
+    751
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "focal-point",
+   "width": 1440,
+   "message": "The first screen has no dominant element: the largest type is 36px (2.5vw) and no single picture holds a third of the viewport.",
+   "fix": "Make one thing lead: the headline at display size, or one large picture. A grid of many small pictures is not one thing; in blind tests jurors marked a first screen without a headline down every time. On the strongest studied sites the largest type has a median of 8.4vw."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "D:\\data rifqi\\S5\\Multimedia Pembelajaran\\tes\\.taste-skill\\inspect\\desktop-fold.jpg",
+   "pages": [
+    "D:\\data rifqi\\S5\\Multimedia Pembelajaran\\tes\\.taste-skill\\inspect\\desktop-page-01.jpg"
+   ]
+  },
+  {
+   "viewport": "tablet",
+   "width": 751,
+   "fold": "D:\\data rifqi\\S5\\Multimedia Pembelajaran\\tes\\.taste-skill\\inspect\\tablet-fold.jpg",
+   "pages": [
+    "D:\\data rifqi\\S5\\Multimedia Pembelajaran\\tes\\.taste-skill\\inspect\\tablet-page-01.jpg"
+   ]
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "D:\\data rifqi\\S5\\Multimedia Pembelajaran\\tes\\.taste-skill\\inspect\\mobile-fold.jpg",
+   "pages": [
+    "D:\\data rifqi\\S5\\Multimedia Pembelajaran\\tes\\.taste-skill\\inspect\\mobile-page-01.jpg"
+   ]
+  }
+ ]
+}
