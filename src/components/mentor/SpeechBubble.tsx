@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Typewriter } from './Typewriter';
 
-type BubbleDirection = 'left' | 'right';
+type BubbleDirection = 'left' | 'right' | 'bottom';
 
 interface SpeechBubbleProps {
   /** Isi bubble yang bukan kalimat tunggal (mis. elemen kaya). */
@@ -14,8 +14,11 @@ interface SpeechBubbleProps {
   textClassName?: string;
   /** Kecepatan mengetik dalam milidetik per huruf (bawaan Typewriter: 38 ms). */
   speed?: number;
+  /** Jeda sebelum karakter pertama (ms; bawaan Typewriter: 320 ms). */
+  delay?: number;
   /** Arah animasi masuk: 'left' = tumbuh dari kiri ke kanan (maskot di kiri),
-   *  'right' = tumbuh dari kanan ke kiri (maskot di kanan). */
+   *  'right' = tumbuh dari kanan ke kiri (maskot di kanan),
+   *  'bottom' = tumbuh dari bawah ke atas (maskot di bawah balon). */
   direction?: BubbleDirection;
   className?: string;
 }
@@ -36,12 +39,13 @@ export const SpeechBubble = ({
   active = true,
   textClassName,
   speed,
+  delay,
   direction = 'left',
   className,
 }: SpeechBubbleProps) => (
   <div className={className ? `mentor-bubble mentor-bubble--${direction} ${className}` : `mentor-bubble mentor-bubble--${direction}`}>
     <div className={textClassName ? `mentor-bubble__text ${textClassName}` : 'mentor-bubble__text'}>
-      {text === undefined ? children : <Typewriter text={text} active={active} speed={speed} />}
+      {text === undefined ? children : <Typewriter text={text} active={active} speed={speed} delay={delay} />}
     </div>
   </div>
 );

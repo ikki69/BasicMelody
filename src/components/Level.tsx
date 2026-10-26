@@ -28,6 +28,7 @@ import { LockedNotice } from './level/LockedNotice';
 import { MateriList } from './level/MateriList';
 import { PositionQuiz } from './level/PositionQuiz';
 import { StarIcon } from './level/Stars';
+import { SymbolQuiz } from './level/SymbolQuiz';
 import { poseForMaterial } from './mentor/mentorPoses';
 
 interface LevelProps {
@@ -154,6 +155,20 @@ export const Level = ({ materiId }: LevelProps) => {
     if (level.kind === 'duration-quiz') {
       return (
         <DurationQuiz
+          key={level.id}
+          level={level}
+          best={best}
+          hasNext={hasNext}
+          onExit={closeLevel}
+          onNext={goToNextLevel}
+          onComplete={handleQuizComplete}
+        />
+      );
+    }
+
+    if (level.kind === 'symbol-quiz') {
+      return (
+        <SymbolQuiz
           key={level.id}
           level={level}
           best={best}

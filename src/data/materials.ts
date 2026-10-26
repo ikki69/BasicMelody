@@ -8,7 +8,7 @@
  * Pembukaan materi berurutan: materi berikutnya terbuka setelah level
  * terakhir materi sebelumnya tuntas.
  */
-export type MaterialId = 'm1' | 'm2' | 'm3';
+export type MaterialId = 'm1' | 'm2' | 'm3' | 'm4' | 'm5' | 'm6';
 
 export interface Material {
   id: MaterialId;
@@ -41,6 +41,27 @@ export const MATERIALS: Material[] = [
     judul: 'Irama',
     deskripsi: 'Latihan irama dengan tempo dan pola yang makin menantang.',
     ringkas: 'Tempo · Pola · Sinkopasi',
+  },
+  {
+    id: 'm4',
+    urutan: 4,
+    judul: 'Not A4, B4, C5, D5, E5, F5, G5',
+    deskripsi: 'Pelajari posisi dan bunyi nada-nada tinggi di atas paranada.',
+    ringkas: 'A4 · B4 · C5 · D5 · E5 · F5 · G5',
+  },
+  {
+    id: 'm5',
+    urutan: 5,
+    judul: 'Tanda Diam dan Tanda Titik',
+    deskripsi: 'Kenali tanda diam dan not bertitik, lalu terapkan di latihan irama.',
+    ringkas: 'Tanda Diam · Tanda Titik',
+  },
+  {
+    id: 'm6',
+    urutan: 6,
+    judul: 'Gabungan (Lagu Mudah)',
+    deskripsi: 'Gabungan materi 1, 2, dan 3 dalam pola lagu yang mudah.',
+    ringkas: 'Gabungan · Lagu Mudah',
   },
 ];
 

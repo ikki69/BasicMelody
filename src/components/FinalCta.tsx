@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { INTRODUCTION_HASH, LEVEL_HASH } from '../lib/intro';
 import { isIntroCompleted } from '../hooks/useLevelProgress';
+import { useNoteBurst } from '../hooks/useNoteBurst';
 import { isPlainLeftClick, navigateWithFade, prefersReducedMotion } from '../lib/navigate';
 
 /**
@@ -16,6 +17,8 @@ import { isPlainLeftClick, navigateWithFade, prefersReducedMotion } from '../lib
  */
 export const FinalCta = () => {
   const [introDone] = useState(isIntroCompleted);
+  // Partikel not musik saat kursor hover tombol "Mulai Belajar".
+  const { onPointerEnter } = useNoteBurst<HTMLAnchorElement>();
 
   const handleNavigate = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     // Biarkan klik dengan modifier (buka tab/jendela baru) jalan normal.
@@ -27,18 +30,34 @@ export const FinalCta = () => {
   }, []);
 
   return (
-    <section className="relative w-full bg-field-pink" aria-label="Lanjut belajar">
-      <div className="mx-auto w-full max-w-[1440px] px-6 pb-16 pt-14 sm:px-10 lg:px-14 lg:pb-20 lg:pt-20">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-5">
-            <h2 className="type-display-medium text-display-sm text-balance text-fg">Siap mulai dari nada pertama?</h2>
+    <section
+      id="section-4"
+      className="relative flex min-h-[100dvh] w-full flex-col justify-center bg-field-pink"
+      aria-label="Lanjut belajar"
+    >
+      {/* pb besar di mobile: memberi zona bebas di bawah konten untuk maskot
+          yang berdiri di sana (lihat POSES_MOBILE.finale + avoid axis-y). */}
+      <div className="mx-auto w-full max-w-[1440px] px-6 pb-44 pt-14 sm:px-10 lg:px-14 lg:pb-20 lg:pt-20">
+        {/*
+          Susunan penutup: teks di kiri (col-span-4), panel tombol di tengah
+          (col-start-5) dengan ekor balon mengarah kanan ke maskot yang
+          berdiri di tepi kanan layar (MascotStage, pose `finale`), dan kolom
+          kanan sengaja dikosongkan — tidak ada yang tertimpa maskot.
+        */}
+        {/* `data-cta-grid`: kotak konten penutup (h2, paragraf, panel) yang
+            dipakai `avoid` maskot mobile sebagai batas zona bawah. */}
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14" data-cta-grid>
+          <div className="lg:col-span-4">
+            <h2 className="type-display-medium text-display-sm text-balance text-fg" data-smear>
+              Siap mulai dari nada pertama?
+            </h2>
             <p className="type-body mt-5 max-w-[40ch] text-pretty text-fg">
               Tidak perlu alat musik dan tidak perlu latar belakang musik. Buka halaman pengenalan untuk mengenali
               garis paranada dan letak nadanya, lalu lanjut ke materi latihan saat kamu sudah siap.
             </p>
           </div>
 
-          <div className="flex flex-col items-start gap-6 lg:col-span-7 lg:pl-6">
+          <div className="flex flex-col items-start gap-6 lg:col-span-4 lg:col-start-5">
             <div className="cta-panel">
               <div className="cta-panel__actions">
                 <a
@@ -46,6 +65,7 @@ export const FinalCta = () => {
                   className="cta-next cta-next--primary"
                   aria-label="Mulai belajar, buka halaman Introduction"
                   onClick={handleNavigate}
+                  onPointerEnter={onPointerEnter}
                 >
                   <span className="cta-next__label">Mulai Belajar</span>
                   <span className="cta-next__arrow" aria-hidden="true">

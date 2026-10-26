@@ -40,7 +40,6 @@ export const Manifesto = ({ prefersReducedMotion }: ManifestoProps) => {
   const stackRef = useRef<HTMLDivElement>(null);
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
-  const bodyRef = useRef<HTMLParagraphElement>(null);
 
   const [frame, setFrame] = useState(0);
   const [shown, setShown] = useState(true);
@@ -97,12 +96,11 @@ export const Manifesto = ({ prefersReducedMotion }: ManifestoProps) => {
 
     const line1 = getPieces(line1Ref.current);
     const line2 = getPieces(line2Ref.current);
-    const body = bodyRef.current;
     const stack = stackRef.current;
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set([...line1, ...line2, body], { yPercent: 0, y: 0, autoAlpha: 1 });
+        gsap.set([...line1, ...line2], { yPercent: 0, y: 0, autoAlpha: 1 });
         gsap.set(stack, { autoAlpha: 1, scale: 1 });
         return;
       }
@@ -121,14 +119,12 @@ export const Manifesto = ({ prefersReducedMotion }: ManifestoProps) => {
         { yPercent: 110, autoAlpha: 0 },
         { yPercent: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out', stagger: 0.03 },
         0
-      )
-        .fromTo(
-          line2,
-          { yPercent: 110, autoAlpha: 0 },
-          { yPercent: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out', stagger: 0.03 },
-          0.12
-        )
-        .fromTo(body, { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: 'power2.out' }, 0.3);
+      ).fromTo(
+        line2,
+        { yPercent: 110, autoAlpha: 0 },
+        { yPercent: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out', stagger: 0.03 },
+        0.12
+      );
 
       gsap.fromTo(
         stack,
@@ -148,24 +144,36 @@ export const Manifesto = ({ prefersReducedMotion }: ManifestoProps) => {
     <section
       ref={sectionRef}
       id="section-2"
-      className="relative w-full overflow-hidden bg-field-sand"
+      className="relative w-full bg-field-sand"
       aria-label="Manifesto"
     >
-      <div className="mx-auto w-full max-w-[1440px] px-6 py-20 sm:px-10 lg:px-14 lg:py-28">
-        <h2 className="type-display-medium text-statement text-fg">
-          <SplitText ref={line1Ref} text="Materi yang jelas," ariaLabel="Materi yang jelas," pieceClassName="type-display-medium" />
-          <br />
-          <SplitText
-            ref={line2Ref}
-            text="latihan yang seru."
-            ariaLabel="latihan yang seru."
-            pieceClassName="type-display-medium"
-          />
-        </h2>
+      {/* Section = tepat satu layar (dvh). Tanpa ini tingginya hanya ~83%
+          (desktop) / ~54% (mobile) dari layar, jadi bidang warna lain ikut
+          terlihat di tepi dan caption panel nyaris menyentuh batas bawah. */}
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[1440px] flex-col justify-center px-6 py-20 sm:px-10 lg:px-14 lg:py-28">
+        {/*
+          Seluruh isi (judul, panel, caption) menempati kolom KANAN
+          (col-start-6) supaya bebas dari maskot yang berdiri di kiri lewat
+          layer tetap MascotStage. Paragraf "Tiap nada punya nama…" sengaja
+          TIDAK ditampilkan di sini — kalimatnya hanya hidup di bubble
+          maskot, jadi tidak ada teks yang dobel atau tertutup.
+        */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-14">
+          {/* Kolom isi Manifesto — penanda `avoid` maskot (desktop: sumbu x
+              dari kiri; mobile: zona bawah konten). */}
+          <div className="lg:col-span-7 lg:col-start-6" data-manifesto-content>
+            <h2 className="type-display-medium text-statement text-fg" data-smear>
+              <SplitText ref={line1Ref} text="Materi yang jelas," ariaLabel="Materi yang jelas," pieceClassName="type-display-medium" />
+              <br />
+              <SplitText
+                ref={line2Ref}
+                text="latihan yang seru."
+                ariaLabel="latihan yang seru."
+                pieceClassName="type-display-medium"
+              />
+            </h2>
 
-        <div className="mt-12 grid grid-cols-1 items-end gap-10 lg:mt-16 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-7">
-            <div className="visual-frame aspect-[2/1] lg:aspect-[8/3]" data-ui>
+            <div className="visual-frame mt-8 aspect-[2/1] lg:mt-16 lg:aspect-[8/3]" data-ui>
               <div ref={stackRef} className="relative h-full w-full">
                 {FRAMES.map(({ Art, name }, i) => (
                   <div
@@ -179,14 +187,6 @@ export const Manifesto = ({ prefersReducedMotion }: ManifestoProps) => {
               </div>
             </div>
             <p className="type-label-base mt-3 text-muted">Tiga langkah pengenalan: paranada, kunci G, lalu not.</p>
-          </div>
-
-          <div className="flex flex-col items-start gap-7 lg:col-span-5">
-            <p ref={bodyRef} className="type-body max-w-[42ch] text-pretty text-fg">
-              Tiap nada punya nama, tempat, dan bunyi. Basicmelody menyusunnya jadi tiga langkah pendek: kenali dulu,
-              ulangi sampai hafal, lalu uji dengan kuis. Tidak ada teori yang menumpuk sebelum kamu bisa memainkan
-              sesuatu.
-            </p>
           </div>
         </div>
       </div>

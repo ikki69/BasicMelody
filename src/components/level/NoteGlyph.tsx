@@ -3,6 +3,8 @@ import type { GlyphName } from '../../data/durationQuestions';
 interface NoteGlyphProps {
   kind: 'note' | 'rest';
   glyph: GlyphName;
+  /** Tampilkan titik perpanjangan (not bertitik). */
+  dotted?: boolean;
   /** Ukuran sisi terpanjang dalam px (tinggi). */
   size?: number;
   className?: string;
@@ -16,7 +18,7 @@ interface NoteGlyphProps {
  * 1/4 (penuh bertangkai), 1/8 (penuh bertangkai berbendera), plus tanda
  * istirahatnya.
  */
-export const NoteGlyph = ({ kind, glyph, size = 96, className, title }: NoteGlyphProps) => {
+export const NoteGlyph = ({ kind, glyph, dotted = false, size = 96, className, title }: NoteGlyphProps) => {
   const filled = glyph === 'quarter' || glyph === 'eighth';
   const hasStem = glyph !== 'whole';
 
@@ -44,6 +46,7 @@ export const NoteGlyph = ({ kind, glyph, size = 96, className, title }: NoteGlyp
           {glyph === 'eighth' && (
             <path className="lv-glyph__flag" d="M35 18c7.5 3.6 11 9.6 8.2 18.5c-.6-6.4-3.4-10.8-8.2-13.4z" />
           )}
+          {dotted && <circle className="lv-glyph__dot" cx={45} cy={64} r={2.2} />}
         </>
       ) : (
         <>
@@ -69,6 +72,7 @@ export const NoteGlyph = ({ kind, glyph, size = 96, className, title }: NoteGlyp
               <circle className="lv-glyph__head is-filled" cx={29} cy={52} r={3.4} />
             </>
           )}
+          {dotted && <circle className="lv-glyph__dot" cx={45} cy={52} r={2.2} />}
         </>
       )}
     </svg>

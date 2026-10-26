@@ -353,6 +353,7 @@
 @media (min-width: 640px) {
   .cta-panel__actions {
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     width: auto;
   }
@@ -2876,6 +2877,10 @@ input.note-slider-input::-moz-range-track {
   stroke-linejoin: round;
 }
 
+.lv-glyph__dot {
+  fill: var(--fg);
+}
+
 .lv-glyph-stage {
   display: flex;
   min-height: 11rem;
@@ -3252,6 +3257,30 @@ input.note-slider-input::-moz-range-track {
   animation: mentorBubbleGrowRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Maskot di BAWAH, bubble tumbuh bawah ke atas (transform-origin bottom). */
+.mentor-bubble--bottom {
+  transform-origin: bottom center;
+  animation: mentorBubbleGrowBottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mentorBubbleGrowBottom {
+  0% {
+    opacity: 0;
+    transform: scaleY(0) scaleX(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: scaleY(1.05) scaleX(0.6);
+  }
+  70% {
+    transform: scaleY(0.98) scaleX(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1) scaleX(1);
+  }
+}
+
 /* Tumbuh dari sisi maskot: melebar lebih dulu, lalu menyesuaikan tinggi. */
 @keyframes mentorBubbleGrowLeft {
   0% {
@@ -3328,6 +3357,18 @@ input.note-slider-input::-moz-range-track {
   right: -8px;
   border-radius: 0 0 5px 0;
   transform: rotate(45deg);
+}
+
+/* Balon di ATAS maskot (layar sempit): ekor di tepi BAWAH, menunjuk ke bawah
+   ke arah kepala maskot. Titiknya sedikit ke kiri karena head maskot tidak
+   persis di tengah badan (badan memuat lengan/flag di kanan). */
+.mentor-bubble--bottom::before {
+  top: auto;
+  bottom: -8px;
+  left: 42%;
+  margin-top: 0;
+  border-radius: 0 0 0 5px;
+  transform: rotate(-45deg);
 }
 
 .mentor-bubble__text {
@@ -3534,4 +3575,369 @@ input.note-slider-input::-moz-range-track {
    tidak pernah terpotong seperti object-cover. */
 .paranada-svg.manifesto-art {
   height: 100%;
+}
+
+/* ============================================================
+   LAYER MASKOT TETAP (MascotStage) + EFEK GULIR
+   Satu maskot di layer fixed; transform-nya di-scrub GSAP dari
+   useMascotScroll. Di sini hanya style statis: ukuran, anchor,
+   glow, bingkai foto, count-up, glitch, wipe, dan smear.
+   ============================================================ */
+
+/* Aksen langkah aktif: didaftarkan supaya pergantiannya bisa
+   ditransisikan, bukan potong langsung. */
+@property --accent-live {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #8ea0e6;
+}
+
+.landing-root {
+  transition: --accent-live 0.5s var(--ease-soft);
+}
+
+.mascot-stage {
+  --mascot-size: 58vh;
+  position: fixed;
+  inset: 0;
+  /* z-50: di atas SEMUA konten termasuk bingkai .visual-frame yang membentuk
+     stacking context sendiri (overflow:hidden + transform reveal GSAP).
+     Dengan z-40 maskot pernah terlihat terpotong bingkai panel Manifesto. */
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+  /* Gerak berkurang / tanpa JS: layer statis menempel di layar pertama. */
+}
+
+.mascot-stage--static {
+  position: absolute;
+  inset: 0 0 auto 0;
+  /* dvh (bukan svh): tinggi paling kecil (svh) membuat layer statis lebih
+     pendek dari layar saat address bar peramban tersembunyi. */
+  height: 100dvh;
+}
+
+.mascot-stage--static .mascot-wipe,
+.mascot-stage--static .mascot-stage__bubble-anchor {
+  display: none;
+}
+
+.mascot-stage--static .mascot-stage__glow {
+  opacity: 0.32;
+}
+
+.mascot-stage--static .mascot-stage__body {
+  opacity: 1;
+}
+
+/* Perspektif untuk rotateX (Fase 3: "dilihat dari atas"). */
+.mascot-stage__anchor {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+}
+
+.mascot-stage__body {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--mascot-size);
+  height: var(--mascot-size);
+  margin-left: calc(var(--mascot-size) / -2);
+  margin-top: calc(var(--mascot-size) / -2);
+  opacity: 0;
+}
+
+/* Maskot di layer ini memakai ukuran penuh, bukan 96px bawaan .mentor,
+   dan bobbing-nya lebih besar (6-10px sesuai spesifikasi idle). */
+.mascot-stage .mentor {
+  width: 100%;
+  height: 100%;
+  animation: stageBob 3.4s var(--ease-soft) infinite;
+}
+
+@keyframes stageBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Mulut ikut bicara saat bubble Manifesto sedang diketik. */
+.mascot-stage:has(.mentor-type.is-typing) .mentor .mentor-mouth {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mentorTalk 0.34s var(--ease-soft) infinite;
+}
+
+/* Glow radial di belakang maskot: satu lingkaran warna aksen yang
+   di-blur lembut, opacity-nya digerakkan scrub. */
+.mascot-stage__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--mascot-size) * 1.7);
+  height: calc(var(--mascot-size) * 1.7);
+  margin-left: calc(var(--mascot-size) * -0.85);
+  margin-top: calc(var(--mascot-size) * -0.85);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--accent-live) 0%, transparent 72%);
+  filter: blur(34px);
+  opacity: 0;
+  /* Dithering (M4): gradien radial besar di atas bidang rata memunculkan
+     pita warna (banding) karena 8-bit per kanal. Lapisan noise 2% memecah
+     batas antar-bita sehingga transisinya terlihat mulus. `mix-blend-mode`
+     tidak dipakai supaya warnanya tetap persis aksen langkah aktif. */
+  background-image:
+    radial-gradient(closest-side, var(--accent-live) 0%, transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='96' height='96' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-blend-mode: normal, overlay;
+}
+
+/* Bubble Manifesto: posisi digerakkan GSAP pada anchor-nya sendiri
+   (tidak ikut skala maskot supaya teks tidak ikut mengecil). */
+.mascot-stage__bubble-anchor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Balon diposisikan dari TITIK ANCHOR (0×0) yang dihitung useMascotScroll.
+   Anchor = sudut KIRI-ATAS kotak balon; hook sudah menggeser setengah ukuran
+   balon, jadi tidak ada transform di sini — penting, karena `.mentor-bubble--*`
+   memasang CSS animation yang memegang properti `transform` (animasi menang
+   atas deklarasi biasa, sehingga translate di sini akan tertimpa). */
+.mascot-stage__bubble-shift {
+  transform: none;
+}
+
+.mascot-stage__bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  flex: none;
+  width: min(30rem, 34vw);
+}
+
+/* Blok warna penuh per batas babak (Fase 5) — scaleY digambar dari
+   progres scroll, jadi tanpa layout property. */
+.mascot-wipe {
+  position: absolute;
+  inset: 0;
+  background-color: #e6dccd;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+/* Smear vertikal headline saat scroll cepat (dari ticker kecepatan). */
+html.is-smearing [data-smear] {
+  filter: blur(calc(var(--smear, 0) * 1px));
+}
+
+/* ============================================================
+   BABAK SHOWCASE: COUNT-UP, GLITCH, BINGKAI FOTO
+   ============================================================ */
+.showcase-count {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-on-dark-muted);
+}
+
+.showcase-count__n {
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--accent-live);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Glitch judul: RGB split + lompatan potongan horizontal, sekali per
+   pergantian langkah (durasi dikontrol JS dari TIMING.glitchMs). */
+.showcase-title__fx {
+  display: inline-block;
+}
+
+.showcase-title__fx.is-glitch {
+  animation: titleGlitch 380ms linear both;
+}
+
+@keyframes titleGlitch {
+  0% {
+    transform: translate(0);
+    text-shadow: none;
+    clip-path: inset(0);
+  }
+  18% {
+    transform: translate(-4px, 1px);
+    text-shadow: 3px 0 rgba(255, 64, 96, 0.85), -3px 0 rgba(64, 224, 255, 0.85);
+    clip-path: inset(0);
+  }
+  36% {
+    transform: translate(3px, -1px);
+    text-shadow: -4px 0 rgba(255, 64, 96, 0.85), 4px 0 rgba(64, 224, 255, 0.85);
+    clip-path: inset(18% 0 52% 0);
+  }
+  54% {
+    transform: translate(-2px, 1px);
+    text-shadow: 2px 0 rgba(255, 64, 96, 0.75), -2px 0 rgba(64, 224, 255, 0.75);
+    clip-path: inset(0);
+  }
+  72% {
+    transform: translate(2px, 0);
+    text-shadow: -2px 0 rgba(255, 64, 96, 0.6), 2px 0 rgba(64, 224, 255, 0.6);
+    clip-path: inset(0);
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: none;
+    clip-path: inset(0);
+  }
+}
+
+/* Bingkai yang dipegang maskot: muncul mengikuti scrub, warnanya aksen
+   langkah aktif. Default tersembunyi; reveal oleh timeline.
+   inset:0 (bukan -10px) karena bingkai kini ber-anchor pada KOTAK FOTO
+   yang overflow-hidden — border 6px makan tepi luar foto persis sejajar. */
+.showcase-photo-frame {
+  position: absolute;
+  inset: 0;
+  border: 6px solid var(--accent-live);
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+/* ============================================================
+   PENUTUP: PANEL CTA SEBAGAI BALON UCAPAN
+   Panel yang memuat "Mulai Belajar" & "Materi Latihan" berubah jadi
+   balon ucap (ekor ke arah maskot) — isinya tetap tombol <a> asli.
+   ============================================================ */
+.cta-panel {
+  position: relative;
+  background-color: #14161a;
+  border-radius: 18px;
+  transition: background-color 0.45s var(--ease-soft);
+}
+
+/* Ekor balon ucap menunjuk ke KANAN — maskot penutup kini berdiri di tepi
+   kanan layar, panel tombol di tengah, h2 penutup bebas di kiri. */
+.cta-panel::before {
+  content: '';
+  position: absolute;
+  right: -8px;
+  left: auto;
+  top: 30%;
+  width: 20px;
+  height: 20px;
+  background-color: #14161a;
+  border-radius: 0 5px 0 0;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.cta-panel #ctaLevelHint {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Tombol penutup SELALU bertumpuk penuh-lebar. Panel sengaja hanya 4/12
+   kolom (maskot berdiri di kanan), jadi dua tombol sejajar tidak akan muat
+   dan wrap-nya menghasilkan lebar baris tak sama (tampak berantakan).
+   Bertumpuk = dua pil simetris, rapi di semua lebar. */
+.cta-panel__actions {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.cta-panel__actions .cta-next {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 1023px) {
+  .mascot-stage {
+    --mascot-size: 42vh;
+  }
+
+  .mascot-stage__bubble {
+    width: min(30rem, 78vw);
+  }
+
+  /* Mobile: maskot penutup berada di zona bawah, bukan di samping panel —
+     ekor balon yang menunjuk ke kanan justru menunjuk ruang kosong. */
+  .cta-panel::before {
+    display: none;
+  }
+}
+
+/* Gerak berkurang: layer statis, bingkai tampil tanpa reveal,
+   ekor balon panel disembunyikan (maskotnya tidak ada di dekat panel). */
+@media (prefers-reduced-motion: reduce) {
+  .mascot-stage {
+    --mascot-size: 55vh;
+  }
+
+  .showcase-photo-frame {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cta-panel::before {
+    display: none;
+  }
+
+  .showcase-title__fx.is-glitch {
+    animation: none;
+  }
+
+  html.is-smearing [data-smear] {
+    filter: none;
+  }
+
+  /* Partikel hover CTA: tidak ada sama sekali bila gerak berkurang
+     (guard juga di useNoteBurst — ini penjaga ganda). */
+  .note-burst__n {
+    display: none;
+  }
+}
+
+/* ============================================================
+   PARTIKEL NOT MUSIK — efek hover tombol "Mulai Belajar"
+   Span ♪/♫/♩/♬ dibuat & dibuang oleh useNoteBurst (pointerenter,
+   hanya mouse, ada cooldown); animasinya murni CSS supaya tidak
+   membebani thread scroll. Posisi acak per not diatur lewat
+   custom properties --dx (geser horizontal) & --rot (putaran).
+   ============================================================ */
+.note-burst__n {
+  position: absolute;
+  top: -8px;
+  pointer-events: none;
+  font-size: 1.05rem;
+  line-height: 1;
+  opacity: 0;
+  animation: noteBurst 0.9s var(--ease-soft) both;
+}
+
+@keyframes noteBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) rotate(0deg) scale(0.6);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx, 0px)), -46px) rotate(var(--rot, 0deg)) scale(1);
+  }
 }

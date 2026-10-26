@@ -11,6 +11,9 @@ const MATERIAL_POSE: Record<MaterialId, MentorPose> = {
   m1: 'point',
   m2: 'talk',
   m3: 'wave',
+  m4: 'point',
+  m5: 'talk',
+  m6: 'wave',
 };
 
 export const poseForMaterial = (materialId: MaterialId): MentorPose => MATERIAL_POSE[materialId];

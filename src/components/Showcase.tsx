@@ -2,11 +2,14 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { projects } from '../data/projects';
+import { TIMING } from '../config/mascotMotion';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface ShowcaseProps {
   prefersReducedMotion: boolean;
+  /** Dilaporkan ke Landing supaya glow/bingkai/aksen mengikuti langkah aktif. */
+  onActiveStep?: (index: number) => void;
 }
 
 const LAST_INDEX = projects.length - 1;
@@ -19,15 +22,32 @@ const LAST_INDEX = projects.length - 1;
  * Pin-nya sengaja hanya satu layar: tiap layar yang dipin harus memunculkan
  * hal baru (langkah, judul, dan gambar yang berganti).
  */
-export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
+export const Showcase = ({ prefersReducedMotion, onActiveStep }: ShowcaseProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const stRef = useRef<ScrollTrigger | null>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleFxRef = useRef<HTMLSpanElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const countRef = useRef<HTMLSpanElement>(null);
+  /** Langkah terakhir yang dilaporkan — mencegah setState/setter tiap frame scroll. */
+  const lastIdxRef = useRef(0);
+  const onActiveStepRef = useRef(onActiveStep);
+  useEffect(() => {
+    onActiveStepRef.current = onActiveStep;
+  }, [onActiveStep]);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeProject = projects[activeIndex];
+
+  /** Satu tempat memperbarui langkah aktif: state lokal + aksen global. */
+  const commitIndex = useCallback((index: number) => {
+    const clamped = Math.min(Math.max(index, 0), LAST_INDEX);
+    if (clamped === lastIdxRef.current) return;
+    lastIdxRef.current = clamped;
+    setActiveIndex(clamped);
+    onActiveStepRef.current?.(clamped);
+  }, []);
 
   // ---- ScrollTrigger: pin + snap + sinkronisasi index ----
   useEffect(() => {
@@ -38,7 +58,11 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
       stRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=100%',
+        // '+=200%' = dua layar tambahan scroll sambil section INI tetap
+        // menempel; tiga langkah bergantian di dalamnya, tanpa satu pun
+        // momen di mana latar belakang muncul. Sebelumnya '+=100%' habis
+        // terlalu cepat (langkah ketiga belum sempat terbaca).
+        end: '+=200%',
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
@@ -52,8 +76,7 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
               }
             : undefined,
         onUpdate: (self) => {
-          const idx = Math.round(self.progress * LAST_INDEX);
-          setActiveIndex((prev) => (prev === idx ? prev : Math.min(Math.max(idx, 0), LAST_INDEX)));
+          commitIndex(Math.round(self.progress * LAST_INDEX));
         },
       });
     }, section);
@@ -62,7 +85,43 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
       ctx.revert();
       stRef.current = null;
     };
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, commitIndex]);
+
+  // ---- Count-up angka langkah (Fase 3/4: angka di samping maskot naik) ----
+  useLayoutEffect(() => {
+    const el = countRef.current;
+    if (!el) return;
+    const target = activeIndex + 1;
+    if (prefersReducedMotion) {
+      el.textContent = String(target);
+      return;
+    }
+    const counter = { v: Number(el.textContent) || 0 };
+    const tween = gsap.to(counter, {
+      v: target,
+      duration: 0.55,
+      ease: 'power2.out',
+      onUpdate: () => {
+        el.textContent = String(Math.round(counter.v));
+      },
+    });
+    return () => {
+      tween.kill();
+    };
+  }, [activeIndex, prefersReducedMotion]);
+
+  // ---- Glitch singkat (RGB split) tiap kali judul langkah berganti ----
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const el = titleFxRef.current;
+    if (!el) return;
+    el.classList.remove('is-glitch');
+    // Paksa reflow supaya animasi bisa diputar ulang.
+    void el.offsetWidth;
+    el.classList.add('is-glitch');
+    const t = window.setTimeout(() => el.classList.remove('is-glitch'), TIMING.glitchMs);
+    return () => window.clearTimeout(t);
+  }, [activeIndex, prefersReducedMotion]);
 
   // ---- Judul & keterangan naik tiap kali langkah berganti ----
   useLayoutEffect(() => {
@@ -80,16 +139,22 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
     };
   }, [activeIndex, prefersReducedMotion]);
 
-  const goToIndex = useCallback((index: number) => {
-    const clamped = Math.min(Math.max(index, 0), LAST_INDEX);
-    const st = stRef.current;
-    if (st && LAST_INDEX > 0) {
-      const target = st.start + (st.end - st.start) * (clamped / LAST_INDEX) + 1;
-      window.scrollTo({ top: target, behavior: 'smooth' });
-      return;
-    }
-    setActiveIndex(clamped);
-  }, []);
+  const goToIndex = useCallback(
+    (index: number) => {
+      const clamped = Math.min(Math.max(index, 0), LAST_INDEX);
+      const st = stRef.current;
+      if (st && LAST_INDEX > 0) {
+        const target = st.start + (st.end - st.start) * (clamped / LAST_INDEX) + 1;
+        // Lenis aktif di landing: pakai supaya tidak melawan gulir halusnya.
+        const lenis = window.__lenis;
+        if (lenis) lenis.scrollTo(target, { duration: 0.6 });
+        else window.scrollTo({ top: target, behavior: 'smooth' });
+        return;
+      }
+      commitIndex(clamped);
+    },
+    [commitIndex]
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight') goToIndex(activeIndex + 1);
@@ -104,42 +169,51 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
       aria-label="Tiga langkah belajar"
       onKeyDown={handleKeyDown}
     >
-      <div className="mx-auto flex h-[100svh] max-w-[1440px] flex-col gap-6 px-6 py-16 sm:px-10 lg:gap-10 lg:px-14 lg:py-20">
-        <h2 className="type-display-medium text-display-sm text-on-dark">Tiga langkah, dari kenal sampai bisa.</h2>
+      <div className="mx-auto flex h-[100dvh] max-w-[1440px] flex-col gap-6 px-6 py-16 sm:px-10 lg:gap-10 lg:px-14 lg:py-20">
+        <h2 className="type-display-medium text-display-sm text-on-dark" data-smear>
+          Tiga langkah, dari kenal sampai bisa.
+        </h2>
 
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-14">
           {/* Kolom kiri: daftar langkah + kontrol */}
           <div className="order-2 flex min-h-0 flex-col justify-between lg:order-1 lg:col-span-5">
-            <ol className="flex flex-col gap-3">
-              {projects.map((p, i) => {
-                const active = i === activeIndex;
-                return (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onClick={() => goToIndex(i)}
-                      aria-current={active ? 'step' : 'false'}
-                      className={`group/item flex w-full items-baseline gap-3 text-left transition duration-300 ${
-                        active ? 'text-on-dark' : 'text-on-dark-muted hover:text-on-dark'
-                      }`}
-                    >
-                      <span
-                        className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full transition duration-300 group-hover/item:scale-125 ${
-                          active ? 'bg-on-dark' : 'bg-on-dark-muted/40'
+            <div className="flex flex-col gap-3">
+              <p className="showcase-count" aria-hidden="true">
+                Langkah <span ref={countRef} className="showcase-count__n">0</span> dari {projects.length}
+              </p>
+              <ol className="flex flex-col gap-3">
+                {projects.map((p, i) => {
+                  const active = i === activeIndex;
+                  return (
+                    <li key={p.id}>
+                      <button
+                        type="button"
+                        onClick={() => goToIndex(i)}
+                        aria-current={active ? 'step' : 'false'}
+                        className={`group/item flex w-full items-baseline gap-3 text-left transition duration-300 ${
+                          active ? 'text-on-dark' : 'text-on-dark-muted hover:text-on-dark'
                         }`}
-                        aria-hidden="true"
-                      />
-                      <span className="text-[1.375rem] font-extrabold leading-tight">{p.title}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
+                      >
+                        <span
+                          className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full transition duration-300 group-hover/item:scale-125 ${
+                            active ? 'bg-[var(--accent-live)]' : 'bg-on-dark-muted/40'
+                          }`}
+                          aria-hidden="true"
+                        />
+                        <span className="text-[1.375rem] font-extrabold leading-tight">{p.title}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
 
             <div className="flex flex-col gap-5">
               <div>
                 <h3 ref={titleRef} className="type-display-medium text-[1.375rem] text-on-dark">
-                  {activeProject.title}
+                  <span ref={titleFxRef} className="showcase-title__fx">
+                    {activeProject.title}
+                  </span>
                 </h3>
                 <p ref={descRef} className="type-body mt-2 max-w-[38ch] text-pretty text-on-dark-muted">
                   {activeProject.description}
@@ -173,9 +247,19 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
             </div>
           </div>
 
-          {/* Kolom kanan: gambar langkah aktif (ketiganya tetap di DOM) */}
-          <figure className="group order-1 flex min-h-0 flex-col lg:order-2 lg:col-span-7">
-            <div className="relative w-full overflow-hidden" style={{ aspectRatio: '16 / 9' }}>
+          {/* Kolom kanan: gambar langkah aktif (ketiganya tetap di DOM).
+              Bingkai .showcase-photo-frame adalah "pegangan" maskot: muncul
+              mengikuti scrub, warnanya = aksen langkah aktif. Bingkai sengaja
+              ada DI DALAM kotak foto (bukan child <figure>) karena figure
+              meng-stretch mengikuti tinggi baris grid (~638px) sementara foto
+              hanya 16:9 (~422px) — anchor di figure membuat bingkai miring
+              jauh di bawah fotonya. */}
+          <figure className="group relative order-1 flex min-h-0 flex-col lg:order-2 lg:col-span-7">
+            <div
+              data-figure
+              className="relative w-full overflow-hidden"
+              style={{ aspectRatio: '16 / 9' }}
+            >
               {projects.map((p, i) => {
                 const active = i === activeIndex;
                 return (
@@ -192,6 +276,7 @@ export const Showcase = ({ prefersReducedMotion }: ShowcaseProps) => {
                   />
                 );
               })}
+              <span data-frame className="showcase-photo-frame" aria-hidden="true" />
             </div>
           </figure>
         </div>

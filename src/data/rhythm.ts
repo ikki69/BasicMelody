@@ -9,8 +9,20 @@
  * Daftar level (materi → level) ada di src/data/levelsExtended.ts.
  */
 
-/** Nada yang bisa ditekan pemain (5 kotak). */
-export type PadNote = 'C4' | 'D4' | 'E4' | 'F4' | 'G4';
+/** Nada yang bisa ditekan pemain. */
+export type PadNote =
+  | 'C4'
+  | 'D4'
+  | 'E4'
+  | 'F4'
+  | 'G4'
+  | 'A4'
+  | 'B4'
+  | 'C5'
+  | 'D5'
+  | 'E5'
+  | 'F5'
+  | 'G5';
 
 export interface RhythmPad {
   note: PadNote;
@@ -30,9 +42,8 @@ export interface RhythmPad {
 }
 
 /**
- * Kotak nada: C D E F G. Urutan tampil dari kiri ke kanan mengikuti huruf.
- * Mapping disamakan ke rentang C4–G4: G4 (garis 4, y=105), F4 (ruang 4, y=117.5),
- * E4 (garis 5, y=130), D4 (ruang bawah staf, y=142.5), C4 (bawah staf, y=155) – perlu ledger line.
+ * Kotak nada: C D E F G + A4 B4 C5 D5 E5 F5 G5.
+ * Mapping mengikuti posisi pada paranada (viewBox 400x196).
  */
 export const RHYTHM_PADS: RhythmPad[] = [
   { note: 'C4', label: 'C', key: 'c', y: 155, posisi: 'Garis bantu bawah', ledger: true },
@@ -40,6 +51,13 @@ export const RHYTHM_PADS: RhythmPad[] = [
   { note: 'E4', label: 'E', key: 'e', y: 130, posisi: 'Garis 5' },
   { note: 'F4', label: 'F', key: 'f', y: 117.5, posisi: 'Ruang 4' },
   { note: 'G4', label: 'G', key: 'g', y: 105, posisi: 'Garis 4' },
+  { note: 'A4', label: 'A', key: 'a', y: 92.5, posisi: 'Ruang 3' },
+  { note: 'B4', label: 'B', key: 'b', y: 80, posisi: 'Garis 3' },
+  { note: 'C5', label: 'C', key: '1', y: 67.5, posisi: 'Ruang 2' },
+  { note: 'D5', label: 'D', key: '2', y: 55, posisi: 'Garis 2' },
+  { note: 'E5', label: 'E', key: '3', y: 42.5, posisi: 'Ruang 1' },
+  { note: 'F5', label: 'F', key: '4', y: 30, posisi: 'Garis 1' },
+  { note: 'G5', label: 'G', key: '5', y: 17.5, posisi: 'Garis bantu atas', ledger: true },
 ];
 
 export const padFor = (note: PadNote): RhythmPad =>
@@ -172,6 +190,96 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: 'm3-7',
     nama: 'Penutup',
     deskripsi: 'Menuntaskan level irama tersulit: Sinkopasi.',
+    ikon: 'crown',
+    jenis: 'level',
+  },
+
+  /* --- Materi 4 · Not A4–G5 --- */
+  {
+    id: 'm4-1',
+    nama: 'Pengenal Nada Tinggi',
+    deskripsi: 'Menyelesaikan pengenalan nada A4–G5.',
+    ikon: 'spark',
+    jenis: 'level',
+  },
+  {
+    id: 'm4-2',
+    nama: 'Mata di Atas',
+    deskripsi: 'Menuntaskan kuis melihat not tinggi lalu menekan kotak nada.',
+    ikon: 'note',
+    jenis: 'level',
+  },
+  {
+    id: 'm4-3',
+    nama: 'Telinga Tajam',
+    deskripsi: 'Menuntaskan kuis latihan telinga nada tinggi.',
+    ikon: 'medal',
+    jenis: 'level',
+  },
+  {
+    id: 'm4-4',
+    nama: 'Penjelajah Tinggi',
+    deskripsi: 'Menuntaskan kuis campuran nada tinggi.',
+    ikon: 'trophy',
+    jenis: 'level',
+  },
+
+  /* --- Materi 5 · Tanda Diam dan Tanda Titik --- */
+  {
+    id: 'm5-1',
+    nama: 'Pengenal Jeda',
+    deskripsi: 'Menyelesaikan pengenalan tanda diam dan tanda titik.',
+    ikon: 'rest',
+    jenis: 'level',
+  },
+  {
+    id: 'm5-2',
+    nama: 'Baca Simbol',
+    deskripsi: 'Menuntaskan kuis mengenali tanda diam dan not bertitik.',
+    ikon: 'note',
+    jenis: 'level',
+  },
+  {
+    id: 'm5-3',
+    nama: 'Jeda Tepat',
+    deskripsi: 'Menuntaskan latihan irama dengan tanda diam.',
+    ikon: 'step',
+    jenis: 'level',
+  },
+  {
+    id: 'm5-4',
+    nama: 'Tanda Titik',
+    deskripsi: 'Menuntaskan latihan irama dengan not bertitik.',
+    ikon: 'spark',
+    jenis: 'level',
+  },
+
+  /* --- Materi 6 · Gabungan (Lagu Mudah) --- */
+  {
+    id: 'm6-1',
+    nama: 'Pengenal Gabungan',
+    deskripsi: 'Menyelesaikan pengenalan materi gabungan.',
+    ikon: 'step',
+    jenis: 'level',
+  },
+  {
+    id: 'm6-2',
+    nama: 'Lagu Pertama',
+    deskripsi: 'Menuntaskan lagu mudah pertama.',
+    ikon: 'note',
+    jenis: 'level',
+  },
+  {
+    id: 'm6-3',
+    nama: 'Lagu Kedua',
+    deskripsi: 'Menuntaskan lagu mudah kedua.',
+    ikon: 'leap',
+    jenis: 'level',
+  },
+  {
+    id: 'm6-4',
+    nama: 'Lagu Ketiga',
+    deskripsi: 'Menuntaskan lagu gabungan mudah ketiga.',
     ikon: 'crown',
     jenis: 'level',
   },

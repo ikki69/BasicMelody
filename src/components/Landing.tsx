@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Labs } from './Basicmelody';
 import { Manifesto } from './Manifesto';
 import { Showcase } from './Showcase';
 import { FinalCta } from './FinalCta';
+import { MascotStage } from './mascot/MascotStage';
+import { useMascotScroll } from '../hooks/useMascotScroll';
+import { useLenis } from '../hooks/useLenis';
+import { STEP_ACCENTS } from '../config/mascotMotion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,13 +17,24 @@ gsap.registerPlugin(ScrollTrigger);
  * periwinkle (kata pembuka) → sand (pernyataan) → near-black (tiga langkah)
  * → pink (penutup). Tiap babak membawa satu gambar nyata dan satu gagasan.
  *
- * Halaman ini sengaja TIDAK memasang smooth-scroll (Lenis): gulirnya gulir
- * bawaan peramban, jadi tetap bekerja tanpa JavaScript, dengan roda tetikus
- * biasa, dengan keyboard, dan dengan pembaca layar. GSAP ScrollTrigger cukup
- * dipakai untuk pin di babak tiga.
+ * Gulirnya dihaluskan Lenis (diintegrasikan ke gsap.ticker supaya ScrollTrigger
+ * pin/snap tetap sinkron); tanpa JavaScript atau dengan prefers-reduced-motion,
+ * Lenis tidak dibuat dan halaman kembali ke gulir bawaan peramban.
+ *
+ * Maskot berjalan lewat SATU layer tetap (MascotStage) yang transform-nya
+ * di-scrub oleh useMascotScroll; `activeStep` di sini adalah satu-satunya
+ * sumber warna aksen (--accent-live): glow, bingkai foto, dan penanda langkah
+ * ikut berubah bersamanya.
  */
 export const Landing = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+
+  // ---- Lenis (dibuat lebih dulu supaya glue di bawah menemukannya) ----
+  const { getLenis } = useLenis();
+
+  // ---- Motion maskot ----
+  const motion = useMascotScroll(!prefersReducedMotion);
 
   // ---- prefers-reduced-motion ----
   useEffect(() => {
@@ -29,6 +44,23 @@ export const Landing = () => {
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
   }, []);
+
+  // ---- Integrasikan Lenis dengan ScrollTrigger + gsap.ticker ----
+  useEffect(() => {
+    const lenis = getLenis();
+    if (!lenis) return;
+
+    window.__lenis = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+    const raf = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(raf);
+
+    return () => {
+      gsap.ticker.remove(raf);
+      lenis.off('scroll', ScrollTrigger.update);
+      if (window.__lenis === lenis) window.__lenis = undefined;
+    };
+  }, [getLenis]);
 
   // ---- Refresh ScrollTrigger setelah font & gambar stabil ----
   useEffect(() => {
@@ -44,14 +76,25 @@ export const Landing = () => {
   }, []);
 
   return (
-    <div className="relative min-h-svh bg-bg text-fg">
-      <main className="relative">
+    <div
+      className="landing-root relative min-h-svh bg-bg text-fg"
+      style={{ '--accent-live': STEP_ACCENTS[activeStep] ?? STEP_ACCENTS[0] } as CSSProperties}
+    >
+      {/* `main` diberi warna bidang: pin-spacer ScrollTrigger transparan dan
+          area itu bisa terlihat sesaat saat section berganti; tanpa warna di
+          sini yang tampil adalah latar body — sumber "sliver" warna lain. */}
+      <main className="relative bg-bg">
         <Labs prefersReducedMotion={prefersReducedMotion} />
         <Manifesto prefersReducedMotion={prefersReducedMotion} />
-        <Showcase prefersReducedMotion={prefersReducedMotion} />
+        <Showcase prefersReducedMotion={prefersReducedMotion} onActiveStep={setActiveStep} />
         {/* Penutup — bukan floating/fixed */}
         <FinalCta />
       </main>
+
+      {/* Layer maskot: selalu SETELAH konten agar berada di atasnya (z-50 —
+          di atas bingkai .visual-frame yang membentuk stacking context
+          sendiri karena `overflow:hidden` + transform reveal). */}
+      <MascotStage motion={motion} enabled={!prefersReducedMotion} activeStep={activeStep} />
 
       {prefersReducedMotion && (
         <div

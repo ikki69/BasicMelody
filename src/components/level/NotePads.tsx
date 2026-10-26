@@ -3,11 +3,10 @@ import { RHYTHM_PADS, type PadNote } from '../../data/rhythm';
 import type { PadFlash } from '../../hooks/useRhythmGame';
 
 /**
- * Batas antar tuts putih yang ditimpa tuts hitam (hiasan): C|D, D|E, dan F|G.
- * E–F memang tidak punya tuts hitam, jadi kolom 3 (batas E|F) dan kolom 5
- * (setelah G) sengaja kosong.
+ * Batas antar tuts putih yang ditimpa tuts hitam (hiasan): C|D, D|E, F|G, A|B, C|D, D|E, F|G.
+ * E–F dan B–C tidak punya tuts hitam.
  */
-const SHARP_BOUNDARIES = [1, 2, 4];
+const SHARP_BOUNDARIES = [1, 2, 4, 6, 8, 9, 11];
 
 interface NotePadsProps {
   onPress: (note: PadNote) => void;
@@ -49,7 +48,12 @@ export const NotePads = ({ onPress, disabled, flash, onPreview, onPreviewEnd }: 
   }, [disabled, onPress]);
 
   return (
-    <div className="lv-pads" role="group" aria-label="Kotak nada C, D, E, F, G">
+    <div
+      className="lv-pads"
+      role="group"
+      aria-label="Kotak nada"
+      style={{ gridTemplateColumns: `repeat(${RHYTHM_PADS.length}, 1fr)` }}
+    >
       {RHYTHM_PADS.map((pad, index) => {
         const isFlashing = flash?.note === pad.note;
         const flashClass = isFlashing ? (flash.ok ? ' is-ok' : ' is-off') : '';
@@ -81,8 +85,13 @@ export const NotePads = ({ onPress, disabled, flash, onPreview, onPreviewEnd }: 
       })}
 
       {/* Tuts hitam: murni hiasan, tak bisa difokus/ditekan */}
-      {SHARP_BOUNDARIES.map((at) => (
-        <span key={at} className="lv-pads__sharp" style={{ left: `${at * 20}%` }} aria-hidden="true" />
+      {SHARP_BOUNDARIES.filter((at) => at < RHYTHM_PADS.length).map((at) => (
+        <span
+          key={at}
+          className="lv-pads__sharp"
+          style={{ left: `${(at / RHYTHM_PADS.length) * 100}%` }}
+          aria-hidden="true"
+        />
       ))}
     </div>
   );

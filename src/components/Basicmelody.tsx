@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText, getPieces } from './SplitText';
-import { MentorBubble } from './mentor/MentorBubble';
+import { useNoteBurst } from '../hooks/useNoteBurst';
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Tagline layar pertama. Bukan lagi paragraf di kolom kiri, melainkan kalimat
- * yang diucapkan maskot di balon ucapannya — jadi tidak ada teks yang dobel dan
- * kolom kanan tidak perlu diisi gambar buatan sendiri.
+ * Tagline layar pertama. Maskotnya kini berjalan lewat layer tetap
+ * (MascotStage) dan menimpa judul di tengah, jadi kalimat ini tampil sebagai
+ * teks biasa di kolom kanan — tidak dobel dengan bubble-nya.
  */
 const TAGLINE =
   'Belajar membaca notasi musik dari nol. Satu nada dalam satu waktu, sampai kamu bisa memainkan lagu tanpa menerka-nerka lagi.';
@@ -20,7 +20,8 @@ interface LabsProps {
 
 /**
  * Layar pertama: kata "Basicmelody." satu baris penuh, satu aksi utama, dan
- * maskot yang mengucapkan tagline di balon ucapannya.
+ * tagline. Maskot besar hadir dari layer tetap (MascotStage) di tengah layar,
+ * menimpa judul — teksnya sendiri tetap elemen DOM biasa di kolom kanan.
  *
  * Tidak ada gerak yang dipin di sini — halaman ini adalah pengantar, jadi ia
  * boleh mengalir begitu saja saat digulir.
@@ -30,6 +31,8 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
   const titleRef = useRef<HTMLSpanElement>(null);
   const actionRef = useRef<HTMLAnchorElement>(null);
   const guideRef = useRef<HTMLDivElement>(null);
+  // Partikel not musik saat kursor hover tombol "Mulai Belajar".
+  const { onPointerEnter } = useNoteBurst<HTMLAnchorElement>();
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -72,11 +75,15 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
     <section
       ref={sectionRef}
       id="section-1"
-      className="relative w-full overflow-hidden bg-field-periwinkle"
+      className="relative w-full bg-field-periwinkle"
       aria-label="Basicmelody"
     >
-      <div className="mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-center gap-8 px-6 py-20 sm:px-10 lg:gap-12 lg:px-14">
-        <h1 className="type-display text-display text-fg">
+      {/* min-h dvh (bukan svh): svh mengikuti viewport TERKECIL (saat address
+          bar peramban sedang tampil), sehingga begitu bilah itu tersembunyi
+          section ini 8-10% lebih pendek dari layar dan warna bidang lain
+          mengintip di tepi bawah. dvh mengikuti viewport saat itu. */}
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[1440px] flex-col justify-center gap-8 px-6 py-20 sm:px-10 lg:gap-12 lg:px-14">
+        <h1 className="type-display text-display text-fg" data-smear>
           <SplitText ref={titleRef} text="Basicmelody." ariaLabel="Basicmelody." pieceClassName="type-display" />
         </h1>
 
@@ -87,6 +94,7 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
               className="cta-next"
               href="#/introduction"
               aria-label="Mulai Belajar, menuju halaman pengenalan"
+              onPointerEnter={onPointerEnter}
             >
               Mulai Belajar
               <span className="cta-next__arrow" aria-hidden="true">
@@ -95,10 +103,12 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
             </a>
           </div>
 
-          {/* Kalimat tagline diucapkan maskot; 20 ms/huruf supaya 137 karakter
-              selesai diketik sebelum pengunjung sempat menggulir. */}
-          <div ref={guideRef} className="lg:col-span-8">
-            <MentorBubble pose="wave" direction="left" className="hero-guide" text={TAGLINE} speed={20} />
+          {/* Kalimat tagline sebagai teks biasa; maskot menyapa dari layer
+              tetapnya, jadi kolom ini tidak perlu mengurus balon ucapannya. */}
+          {/* Grid berisi tombol aksi + tagline: penanda untuk `avoid` pose
+              maskot mobile (zonanya harus bebas dari teks). */}
+          <div ref={guideRef} className="lg:col-span-8" data-hero-foot>
+            <p className="type-body max-w-[62ch] text-pretty text-fg">{TAGLINE}</p>
           </div>
         </div>
       </div>
