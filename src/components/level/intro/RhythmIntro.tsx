@@ -11,17 +11,17 @@ interface RhythmIntroProps {
 const DEMO_BEATS = [1, 2, 3, 4];
 
 /**
- * Pengenalan Materi 3: hitung ketukan 1-2-3-4 dengan metronom sambil melihat
- * playhead bergerak. Ini "pemanasan" sebelum kuis irama yang butuh tempo.
+ * Isi pengenalan ketukan & tempo tanpa rangka halaman — dipakai langsung oleh
+ * Materi 3/6 dan sebagai bagian pengenalan gabungan.
  */
-export const RhythmIntro = ({ level, onComplete, onExit }: RhythmIntroProps) => {
+export const RhythmIntroBody = () => {
   const { playing, beat, silent, playheadRef, start, stop } = useBeatDemo({
     bpm: 60,
     beats: DEMO_BEATS.length,
   });
 
   return (
-    <IntroShell level={level} onComplete={onComplete} onExit={onExit}>
+    <>
       <div className="lv-intro__metro" data-playing={playing} data-beat={beat ?? ''}>
         <div className="lv-metro" aria-label="Bar empat ketukan">
           <span ref={playheadRef} className="lv-metro__playhead" aria-hidden="true" />
@@ -50,6 +50,16 @@ export const RhythmIntro = ({ level, onComplete, onExit }: RhythmIntroProps) => 
       </div>
 
       <p className="lv-hint">Satu ketukan = satu gerakan playhead. Nanti kamu menekan kotak nada tepat saat playhead menyentuh not.</p>
-    </IntroShell>
+    </>
   );
 };
+
+/**
+ * Pengenalan Materi 3: hitung ketukan 1-2-3-4 dengan metronom sambil melihat
+ * playhead bergerak. Ini "pemanasan" sebelum kuis irama yang butuh tempo.
+ */
+export const RhythmIntro = ({ level, onComplete, onExit }: RhythmIntroProps) => (
+  <IntroShell level={level} onComplete={onComplete} onExit={onExit}>
+    <RhythmIntroBody />
+  </IntroShell>
+);

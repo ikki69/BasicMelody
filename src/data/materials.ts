@@ -8,7 +8,7 @@
  * Pembukaan materi berurutan: materi berikutnya terbuka setelah level
  * terakhir materi sebelumnya tuntas.
  */
-export type MaterialId = 'm1' | 'm2' | 'm3' | 'm4' | 'm5' | 'm6';
+export type MaterialId = 'm1' | 'm2' | 'm3' | 'm4' | 'm5' | 'm6' | 'm7' | 'm8' | 'm9';
 
 export interface Material {
   id: MaterialId;
@@ -45,9 +45,9 @@ export const MATERIALS: Material[] = [
   {
     id: 'm4',
     urutan: 4,
-    judul: 'Not A4, B4, C5, D5, E5, F5, G5',
-    deskripsi: 'Pelajari posisi dan bunyi nada-nada tinggi di atas paranada.',
-    ringkas: 'A4 · B4 · C5 · D5 · E5 · F5 · G5',
+    judul: 'Not C4 hingga G5',
+    deskripsi: 'Pelajari posisi dan bunyi nada dari C4 sampai G5 pada paranada.',
+    ringkas: 'C4 – G5 · 12 nada',
   },
   {
     id: 'm5',
@@ -62,6 +62,27 @@ export const MATERIALS: Material[] = [
     judul: 'Gabungan (Lagu Mudah)',
     deskripsi: 'Gabungan materi 1, 2, dan 3 dalam pola lagu yang mudah.',
     ringkas: 'Gabungan · Lagu Mudah',
+  },
+  {
+    id: 'm7',
+    urutan: 7,
+    judul: 'Gabungan Posisi Not & Tanda Diam',
+    deskripsi: 'Gabungan materi 1 dan 5: posisi not C4–G4 dipadukan dengan tanda diam dan not bertitik.',
+    ringkas: 'Posisi Not · Tanda Diam',
+  },
+  {
+    id: 'm8',
+    urutan: 8,
+    judul: 'Gabungan Nilai Not & Lagu',
+    deskripsi: 'Gabungan materi 2 dan 6: nilai not diterapkan dalam pola lagu yang mudah.',
+    ringkas: 'Nilai Not · Lagu Mudah',
+  },
+  {
+    id: 'm9',
+    urutan: 9,
+    judul: 'Lagu Medium (Gabungan)',
+    deskripsi: 'Gabungan materi 1, 2, 3, 5, dan 6: posisi, nilai, irama, tanda diam, dan lagu medium.',
+    ringkas: 'Semua Materi · Lagu Medium',
   },
 ];
 

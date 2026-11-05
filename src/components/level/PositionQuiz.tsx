@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { RHYTHM_PADS, padFor, type PadNote } from '../../data/rhythm';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { padsFor, padFor, type PadNote } from '../../data/rhythm';
 import { levelLabel, type ExtendedLevel, type PositionMode } from '../../data/levelsExtended';
 import type { LevelResult } from '../../hooks/useLevelProgress';
 import type { PadFlash, RhythmOutcome, TrayMessage } from '../../hooks/useRhythmGame';
@@ -23,11 +23,12 @@ interface PositionQuizProps {
 
 type Phase = 'brief' | 'play' | 'result';
 
-const pickNotes = (count: number): PadNote[] => {
+const pickNotes = (count: number, available: readonly PadNote[]): PadNote[] => {
   const notes: PadNote[] = [];
   let previous: PadNote | null = null;
   for (let index = 0; index < count; index += 1) {
-    const pool = RHYTHM_PADS.map((pad) => pad.note).filter((note) => note !== previous);
+    // Hindari nada yang sama dua kali berturut-turut bila pilihannya cukup.
+    const pool = available.length > 1 ? available.filter((note) => note !== previous) : available;
     const note = pool[Math.floor(Math.random() * pool.length)];
     notes.push(note);
     previous = note;
@@ -42,14 +43,18 @@ const modeFor = (mode: PositionMode, index: number): 'visual' | 'audio' => {
 };
 
 /**
- * Kuis posisi not (Materi 1): satu nada ditampilkan di paranada atau hanya
- * dibunyikan, pemain menekan kotak nada yang benar. Tanpa batas waktu.
+ * Kuis posisi not (Materi 1 C4–G4, Materi 4 C4–G5): satu nada ditampilkan di
+ * paranada atau hanya dibunyikan, pemain menekan kotak nada yang benar.
+ * Tanpa batas waktu.
  */
 export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete }: PositionQuizProps) => {
   const mode = level.position?.mode ?? 'visual';
   const count = level.position?.count ?? 8;
 
-  const [questions, setQuestions] = useState<PadNote[]>(() => pickNotes(count));
+  /** Nada yang boleh muncul & kotak nada yang tampil, sesuai data level. */
+  const available = useMemo(() => padsFor(level.notes).map((pad) => pad.note), [level.notes]);
+
+  const [questions, setQuestions] = useState<PadNote[]>(() => pickNotes(count, available));
 
   const [phase, setPhase] = useState<Phase>('brief');
   const [index, setIndex] = useState(0);
@@ -75,7 +80,7 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
   }, []);
 
   const start = useCallback(() => {
-    const nextQuestions = pickNotes(count);
+    const nextQuestions = pickNotes(count, available);
     setQuestions(nextQuestions);
     setVerdicts(nextQuestions.map(() => null));
     setIndex(0);
@@ -85,7 +90,7 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
     setOutcome(null);
     reportedRef.current = false;
     setPhase('play');
-  }, [count]);
+  }, [available, count]);
 
   const answer = useCallback(
     (note: PadNote) => {
@@ -100,12 +105,12 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
       setFlash({ id: Date.now(), note, ok: correct });
 
       if (correct) {
-        pushTray('perfect', 'Benar!', `${padFor(current).label} memang di ${padFor(current).posisi}`);
+        pushTray('perfect', 'Benar!', `${padFor(current).note} memang di ${padFor(current).posisi}`);
       } else {
         pushTray(
           'miss',
-          `Bukan itu: ${padFor(current).label}`,
-          `${padFor(current).label} berada di ${padFor(current).posisi}`
+          `Bukan itu: ${padFor(current).note}`,
+          `${padFor(current).note} berada di ${padFor(current).posisi}`
         );
       }
     },
@@ -213,8 +218,8 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
                   : 'Sebuah not muncul di paranada.'}
               </li>
               <li>
-                Tekan kotak nada (<strong>C D E F G</strong>) yang menurutmu benar. Bisa juga pakai tombol
-                keyboard C, D, E, F, G.
+                Tekan kotak nada (<strong>{available.join(' · ')}</strong>) yang menurutmu benar. Bisa juga
+                pakai tombol keyboard sesuai huruf nada atau nomor kotaknya.
               </li>
               <li>Tidak ada batas waktu. Pikirkan dulu, lalu tekan.</li>
             </ol>
@@ -251,12 +256,17 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
             {answeredCorrect !== null && current && (
               <p className="lv-hint" data-answer={answeredCorrect ? 'correct' : 'wrong'}>
                 {answeredCorrect
-                  ? `Tepat! Itu nada ${padFor(current).label} (${padFor(current).posisi}).`
-                  : `Jawaban yang benar: ${padFor(current).label} (${padFor(current).posisi}).`}
+                  ? `Tepat! Itu nada ${padFor(current).note} (${padFor(current).posisi}).`
+                  : `Jawaban yang benar: ${padFor(current).note} (${padFor(current).posisi}).`}
               </p>
             )}
 
-            <NotePads onPress={answer} disabled={phase !== 'play' || answeredCorrect !== null} flash={flash} />
+            <NotePads
+              notes={level.notes}
+              onPress={answer}
+              disabled={phase !== 'play' || answeredCorrect !== null}
+              flash={flash}
+            />
 
             {answeredCorrect !== null && (
               <button type="button" className="lv-btn lv-btn--primary" id="nextQuestion" onClick={advance}>

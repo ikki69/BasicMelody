@@ -18,10 +18,10 @@ interface DurationIntroProps {
 const DEMO_BEAT_MS = 600;
 
 /**
- * Pengenalan Materi 2: kartu nilai not. Menekan kartu membunyikan nada dan
- * menunjukkan panjangnya dalam ketukan.
+ * Isi pengenalan nilai not tanpa rangka halaman — dipakai langsung oleh
+ * Materi 2 dan sebagai bagian pengenalan gabungan.
  */
-export const DurationIntro = ({ level, onComplete, onExit }: DurationIntroProps) => {
+export const DurationIntroBody = () => {
   const [selected, setSelected] = useState<DurationCard | null>(null);
   const [runId, setRunId] = useState(0);
   const [silent, setSilent] = useState(false);
@@ -38,7 +38,7 @@ export const DurationIntro = ({ level, onComplete, onExit }: DurationIntroProps)
   const durationMs = selected ? Math.round(selected.beats * DEMO_BEAT_MS) : 0;
 
   return (
-    <IntroShell level={level} onComplete={onComplete} onExit={onExit}>
+    <>
       <div className="lv-intro__groups">
         <section className="lv-intro__group" aria-label="Nilai not">
           <h2 className="lv-intro__group-title">Not</h2>
@@ -88,6 +88,16 @@ export const DurationIntro = ({ level, onComplete, onExit }: DurationIntroProps)
         )}
       </div>
       {silent && <p className="lv-brief__warn">Audio tidak aktif, ikuti panduan visualnya.</p>}
-    </IntroShell>
+    </>
   );
 };
+
+/**
+ * Pengenalan Materi 2: kartu nilai not. Menekan kartu membunyikan nada dan
+ * menunjukkan panjangnya dalam ketukan.
+ */
+export const DurationIntro = ({ level, onComplete, onExit }: DurationIntroProps) => (
+  <IntroShell level={level} onComplete={onComplete} onExit={onExit}>
+    <DurationIntroBody />
+  </IntroShell>
+);

@@ -1,17 +1,30 @@
-import { useEffect } from 'react';
-import { RHYTHM_PADS, type PadNote } from '../../data/rhythm';
+import { useEffect, useMemo } from 'react';
+import { padsFor, type PadNote, type RhythmPad } from '../../data/rhythm';
 import type { PadFlash } from '../../hooks/useRhythmGame';
 
+/** Pasangan nada yang dipisahkan tuts hitam: C–D, D–E, F–G, G–A, A–B. */
+const SHARP_PAIRS = new Set(['CD', 'DE', 'FG', 'GA', 'AB']);
+
 /**
- * Batas antar tuts putih yang ditimpa tuts hitam (hiasan): C|D, D|E, F|G, A|B, C|D, D|E, F|G.
- * E–F dan B–C tidak punya tuts hitam.
+ * Batas antar tuts yang ditimpa tuts hitam (hiasan), dihitung dari nada yang
+ * benar-benar tampil. E–F dan B–C tidak punya tuts hitam.
  */
-const SHARP_BOUNDARIES = [1, 2, 4, 6, 8, 9, 11];
+const sharpBoundariesOf = (pads: RhythmPad[]): number[] =>
+  pads.slice(0, -1).flatMap((pad, index) => {
+    const left = pad.note.slice(0, -1);
+    const right = pads[index + 1].note.slice(0, -1);
+    return SHARP_PAIRS.has(`${left}${right}`) ? [index + 1] : [];
+  });
 
 interface NotePadsProps {
   onPress: (note: PadNote) => void;
   disabled: boolean;
   flash: PadFlash | null;
+  /**
+   * Nada yang ditampilkan (urut bebas; selalu diurutkan sesuai paranada).
+   * Tanpa isian → semua nada C4–G5.
+   */
+  notes?: readonly PadNote[];
   /**
    * Pratinjau saat kursor masuk ke kotak nada (dipakai pengenalan Materi 1).
    * Opsional — kuis posisi & game irama tidak memakainya.
@@ -22,22 +35,26 @@ interface NotePadsProps {
 }
 
 /**
- * Papan tuts 5 nada (C D E F G) di bawah paranada. Bisa ditekan dengan
- * klik/sentuh atau tombol keyboard sesuai hurufnya (C, D, E, F, G).
+ * Papan tuts nada di bawah paranada. Default menampilkan semua nada C4–G5;
+ * level yang punya `notes` (mis. Materi 1) hanya menampilkan nadanya saja.
+ * Bisa ditekan dengan klik/sentuh atau tombol keyboard sesuai huruf nadanya.
  *
  * Bila `onPreview` diisi, kursor yang masuk/keluar kotak nada ikut memicu
  * pratinjau. Perangkat layar sentuh dilewati agar tap tetap jadi jalur
  * utamanya (di sana tidak ada hover).
  */
-export const NotePads = ({ onPress, disabled, flash, onPreview, onPreviewEnd }: NotePadsProps) => {
+export const NotePads = ({ onPress, disabled, flash, notes, onPreview, onPreviewEnd }: NotePadsProps) => {
+  const pads = useMemo(() => padsFor(notes), [notes]);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
       const key = e.key.toLowerCase();
-      // Bisa memakai huruf nada (C D E F G) atau angka 1–5.
-      const pad = RHYTHM_PADS.find((item, index) => item.key === key || String(index + 1) === key);
+      // Huruf/nada milik tuts diutamakan; nomor urut kotak jadi cadangan
+      // (berguna untuk papan 5 nada yang hanya punya tombol C D E F G).
+      const pad = pads.find((item) => item.key === key) ?? pads.find((_, index) => String(index + 1) === key);
       if (!pad) return;
       e.preventDefault();
       if (disabled) return;
@@ -45,16 +62,17 @@ export const NotePads = ({ onPress, disabled, flash, onPreview, onPreviewEnd }: 
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [disabled, onPress]);
+  }, [disabled, onPress, pads]);
 
   return (
     <div
       className="lv-pads"
       role="group"
       aria-label="Kotak nada"
-      style={{ gridTemplateColumns: `repeat(${RHYTHM_PADS.length}, 1fr)` }}
+      data-count={pads.length}
+      style={{ gridTemplateColumns: `repeat(${Math.max(pads.length, 1)}, 1fr)` }}
     >
-      {RHYTHM_PADS.map((pad, index) => {
+      {pads.map((pad) => {
         const isFlashing = flash?.note === pad.note;
         const flashClass = isFlashing ? (flash.ok ? ' is-ok' : ' is-off') : '';
         return (
@@ -77,7 +95,7 @@ export const NotePads = ({ onPress, disabled, flash, onPreview, onPreviewEnd }: 
               if (disabled) return;
               onPress(pad.note);
             }}
-            aria-label={`Nada ${pad.note} (${pad.posisi}), tombol keyboard ${pad.label} atau ${index + 1}`}
+            aria-label={`Nada ${pad.note} (${pad.posisi}), tombol keyboard ${pad.key.toUpperCase()}`}
           >
             <span className="lv-pad__note">{pad.note}</span>
           </button>
@@ -85,11 +103,11 @@ export const NotePads = ({ onPress, disabled, flash, onPreview, onPreviewEnd }: 
       })}
 
       {/* Tuts hitam: murni hiasan, tak bisa difokus/ditekan */}
-      {SHARP_BOUNDARIES.filter((at) => at < RHYTHM_PADS.length).map((at) => (
+      {sharpBoundariesOf(pads).map((at) => (
         <span
           key={at}
           className="lv-pads__sharp"
-          style={{ left: `${(at / RHYTHM_PADS.length) * 100}%` }}
+          style={{ left: `${(at / Math.max(pads.length, 1)) * 100}%` }}
           aria-hidden="true"
         />
       ))}

@@ -1,4 +1,5 @@
 import type { ExtendedLevel } from '../../data/levelsExtended';
+import { CombinedIntro } from './intro/CombinedIntro';
 import { DurationIntro } from './intro/DurationIntro';
 import { PositionIntro } from './intro/PositionIntro';
 import { RhythmIntro } from './intro/RhythmIntro';
@@ -17,6 +18,10 @@ interface IntroLevelProps {
  * posisi not, nilai not, atau ketukan & tempo.
  */
 export const IntroLevel = ({ level, onComplete, onExit }: IntroLevelProps) => {
+  // Materi gabungan menampilkan pengenalan semua topik penyusunnya.
+  if (level.materialId === 'm7' || level.materialId === 'm8' || level.materialId === 'm9') {
+    return <CombinedIntro level={level} onComplete={onComplete} onExit={onExit} />;
+  }
   if (level.materialId === 'm1' || level.materialId === 'm4') {
     return <PositionIntro level={level} onComplete={onComplete} onExit={onExit} />;
   }

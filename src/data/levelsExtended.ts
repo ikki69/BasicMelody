@@ -1,5 +1,5 @@
 import type { MaterialId } from './materials';
-import type { PadNote, RhythmLevel } from './rhythm';
+import { ALL_PAD_NOTES, LOW_PAD_NOTES, type PadNote, type RhythmLevel } from './rhythm';
 
 /**
  * Daftar lengkap level untuk semua materi.
@@ -50,6 +50,11 @@ export interface ExtendedLevel {
   judul: string;
   deskripsi: string;
   kind: LevelKind;
+  /**
+   * Nada yang dipakai level ini. Tanpa isian = semua nada C4–G5.
+   * Materi 1 dibatasi C4–G4, Materi 4 memakai rentang penuh.
+   */
+  notes?: PadNote[];
   position?: PositionQuizConfig;
   duration?: DurationQuizConfig;
   symbol?: SymbolQuizConfig;
@@ -63,16 +68,18 @@ export const EXTENDED_LEVELS: ExtendedLevel[] = [
     materialId: 'm1',
     urutan: 1,
     judul: 'Pengenalan Posisi Not',
-    deskripsi: 'Kenali lima nada C, D, E, F, G dan posisinya pada paranada.',
+    deskripsi: 'Kenali lima nada C4, D4, E4, F4, G4 dan posisinya pada paranada.',
     kind: 'intro',
+    notes: LOW_PAD_NOTES,
   },
   {
     id: 'm1-2',
     materialId: 'm1',
     urutan: 2,
     judul: 'Lihat lalu Tekan',
-    deskripsi: 'Not muncul di paranada. Tekan kotak nada yang benar.',
+    deskripsi: 'Not C4–G4 muncul di paranada. Tekan kotak nada yang benar.',
     kind: 'position-quiz',
+    notes: LOW_PAD_NOTES,
     position: { mode: 'visual', count: 8 },
   },
   {
@@ -80,8 +87,9 @@ export const EXTENDED_LEVELS: ExtendedLevel[] = [
     materialId: 'm1',
     urutan: 3,
     judul: 'Latihan Telinga',
-    deskripsi: 'Nada hanya terdengar. Tebak kotak nadanya tanpa melihat paranada.',
+    deskripsi: 'Nada C4–G4 hanya terdengar. Tebak kotak nadanya tanpa melihat paranada.',
     kind: 'position-quiz',
+    notes: LOW_PAD_NOTES,
     position: { mode: 'audio', count: 8 },
   },
   {
@@ -89,8 +97,9 @@ export const EXTENDED_LEVELS: ExtendedLevel[] = [
     materialId: 'm1',
     urutan: 4,
     judul: 'Campuran Nada',
-    deskripsi: 'Campuran soal melihat dan mendengar dengan tempo tetap.',
+    deskripsi: 'Campuran soal melihat dan mendengar nada C4–G4 dengan tempo tetap.',
     kind: 'position-quiz',
+    notes: LOW_PAD_NOTES,
     position: { mode: 'mixed', count: 12 },
   },
 
@@ -231,22 +240,24 @@ export const EXTENDED_LEVELS: ExtendedLevel[] = [
     },
   },
 
-  /* ---------------- Materi 4 · Not A4–G5 ---------------- */
+  /* ---------------- Materi 4 · Not C4–G5 ---------------- */
   {
     id: 'm4-1',
     materialId: 'm4',
     urutan: 1,
-    judul: 'Pengenalan Not Tinggi',
-    deskripsi: 'Kenali nada A4, B4, C5, D5, E5, F5, G5 dan posisinya pada paranada.',
+    judul: 'Pengenalan Not C4–G5',
+    deskripsi: 'Kenali nada dari C4 sampai G5 dan posisinya pada paranada.',
     kind: 'intro',
+    notes: ALL_PAD_NOTES,
   },
   {
     id: 'm4-2',
     materialId: 'm4',
     urutan: 2,
     judul: 'Lihat lalu Tekan',
-    deskripsi: 'Not tinggi muncul di paranada. Tekan kotak nada yang benar.',
+    deskripsi: 'Not dari C4 sampai G5 muncul di paranada. Tekan kotak nada yang benar.',
     kind: 'position-quiz',
+    notes: ALL_PAD_NOTES,
     position: { mode: 'visual', count: 8 },
   },
   {
@@ -254,17 +265,19 @@ export const EXTENDED_LEVELS: ExtendedLevel[] = [
     materialId: 'm4',
     urutan: 3,
     judul: 'Latihan Telinga',
-    deskripsi: 'Nada tinggi hanya terdengar. Tebak kotak nadanya tanpa melihat paranada.',
+    deskripsi: 'Nada C4–G5 hanya terdengar. Tebak kotak nadanya tanpa melihat paranada.',
     kind: 'position-quiz',
+    notes: ALL_PAD_NOTES,
     position: { mode: 'audio', count: 8 },
   },
   {
     id: 'm4-4',
     materialId: 'm4',
     urutan: 4,
-    judul: 'Campuran Nada Tinggi',
-    deskripsi: 'Campuran soal melihat dan mendengar dengan tempo tetap.',
+    judul: 'Campuran Nada',
+    deskripsi: 'Campuran soal melihat dan mendengar seluruh nada C4–G5 dengan tempo tetap.',
     kind: 'position-quiz',
+    notes: ALL_PAD_NOTES,
     position: { mode: 'mixed', count: 12 },
   },
 
@@ -371,6 +384,199 @@ export const EXTENDED_LEVELS: ExtendedLevel[] = [
       countIn: 4,
     },
   },
+
+  /* ---------------- Materi 7 · Gabungan Posisi Not & Tanda Diam ---------------- */
+  {
+    id: 'm7-1',
+    materialId: 'm7',
+    urutan: 1,
+    judul: 'Pengenalan Gabungan',
+    deskripsi: 'Ulangi posisi not C4–G4 sambil mengenali tanda diam dan not bertitik.',
+    kind: 'intro',
+    notes: LOW_PAD_NOTES,
+  },
+  {
+    id: 'm7-2',
+    materialId: 'm7',
+    urutan: 2,
+    judul: 'Baca Simbol',
+    deskripsi: 'Tentukan nilai tanda diam dan not bertitik yang ditampilkan.',
+    kind: 'symbol-quiz',
+    symbol: { count: 8, type: 'mix' },
+  },
+  {
+    id: 'm7-3',
+    materialId: 'm7',
+    urutan: 3,
+    judul: 'Posisi & Jeda',
+    deskripsi: 'Not C4–G4 muncul di paranada. Tekan kotak nada yang benar.',
+    kind: 'position-quiz',
+    notes: LOW_PAD_NOTES,
+    position: { mode: 'visual', count: 8 },
+  },
+  {
+    id: 'm7-4',
+    materialId: 'm7',
+    urutan: 4,
+    judul: 'Irama Bertanda Diam',
+    deskripsi: 'Mainkan pola C4–G4 sambil berhenti tepat pada tanda diam.',
+    kind: 'rhythm',
+    notes: LOW_PAD_NOTES,
+    rhythm: {
+      bpm: 76,
+      beats: 8,
+      subdivisions: 1,
+      steps: ['C4', 'D4', null, 'E4', 'G4', null, 'F4', 'E4'],
+      countIn: 4,
+    },
+  },
+  {
+    id: 'm7-5',
+    materialId: 'm7',
+    urutan: 5,
+    judul: 'Not Bertitik & Jeda',
+    deskripsi: 'Pola lebih rapat dengan tanda diam dan not bertitik.',
+    kind: 'rhythm',
+    notes: LOW_PAD_NOTES,
+    rhythm: {
+      bpm: 80,
+      beats: 8,
+      subdivisions: 2,
+      steps: ['C4', null, 'D4', 'E4', null, 'G4', null, 'E4', 'D4', null, 'F4', 'E4', null, 'C4', null, null],
+      countIn: 4,
+    },
+  },
+
+  /* ---------------- Materi 8 · Gabungan Nilai Not & Lagu ---------------- */
+  {
+    id: 'm8-1',
+    materialId: 'm8',
+    urutan: 1,
+    judul: 'Pengenalan Nilai Not & Lagu',
+    deskripsi: 'Ulangi nilai not 1/4, 1/2, 1/1, dan 1/8 sebelum memainkan lagu.',
+    kind: 'intro',
+  },
+  {
+    id: 'm8-2',
+    materialId: 'm8',
+    urutan: 2,
+    judul: 'Nilai Not Dasar',
+    deskripsi: 'Tentukan berapa ketukan nilai not yang ditampilkan.',
+    kind: 'duration-quiz',
+    duration: { count: 8 },
+  },
+  {
+    id: 'm8-3',
+    materialId: 'm8',
+    urutan: 3,
+    judul: 'Hitung Nilai Not',
+    deskripsi: 'Latihan menghitung nilai not dengan lebih banyak soal.',
+    kind: 'duration-quiz',
+    duration: { count: 12 },
+  },
+  {
+    id: 'm8-4',
+    materialId: 'm8',
+    urutan: 4,
+    judul: 'Lagu Nilai Not I',
+    deskripsi: 'Terapkan nilai not dalam lagu mudah bernada C4–G4.',
+    kind: 'rhythm',
+    notes: LOW_PAD_NOTES,
+    rhythm: {
+      bpm: 84,
+      beats: 8,
+      subdivisions: 1,
+      steps: ['C4', 'E4', 'G4', 'E4', 'C4', null, 'D4', 'E4'],
+      countIn: 4,
+    },
+  },
+  {
+    id: 'm8-5',
+    materialId: 'm8',
+    urutan: 5,
+    judul: 'Lagu Nilai Not II',
+    deskripsi: 'Lagu mudah dengan campuran not 1/4, not 1/8, dan tanda diam.',
+    kind: 'rhythm',
+    notes: LOW_PAD_NOTES,
+    rhythm: {
+      bpm: 88,
+      beats: 8,
+      subdivisions: 2,
+      steps: ['C4', null, 'D4', 'E4', 'G4', null, 'E4', 'D4', 'C4', null, 'E4', 'D4', null, 'C4', null, null],
+      countIn: 4,
+    },
+  },
+
+  /* ---------------- Materi 9 · Lagu Medium (Gabungan) ---------------- */
+  {
+    id: 'm9-1',
+    materialId: 'm9',
+    urutan: 1,
+    judul: 'Pengenalan Lagu Medium',
+    deskripsi: 'Gabungan posisi not, nilai not, irama, tanda diam, dan lagu dalam satu tantangan.',
+    kind: 'intro',
+    notes: ALL_PAD_NOTES,
+  },
+  {
+    id: 'm9-2',
+    materialId: 'm9',
+    urutan: 2,
+    judul: 'Posisi Not C4–G5',
+    deskripsi: 'Campuran soal melihat dan mendengar nada C4–G5.',
+    kind: 'position-quiz',
+    notes: ALL_PAD_NOTES,
+    position: { mode: 'mixed', count: 8 },
+  },
+  {
+    id: 'm9-3',
+    materialId: 'm9',
+    urutan: 3,
+    judul: 'Nilai Not',
+    deskripsi: 'Ulangi semua nilai not sebelum memainkan lagu medium.',
+    kind: 'duration-quiz',
+    duration: { count: 8 },
+  },
+  {
+    id: 'm9-4',
+    materialId: 'm9',
+    urutan: 4,
+    judul: 'Tanda Diam & Titik',
+    deskripsi: 'Kenali kembali tanda diam dan not bertitik dalam satu kuis.',
+    kind: 'symbol-quiz',
+    symbol: { count: 8, type: 'mix' },
+  },
+  {
+    id: 'm9-5',
+    materialId: 'm9',
+    urutan: 5,
+    judul: 'Lagu Medium I',
+    deskripsi: 'Lagu medium pertama dengan nada C4–G5, not 1/8, dan tanda diam.',
+    kind: 'rhythm',
+    notes: ALL_PAD_NOTES,
+    rhythm: {
+      bpm: 92,
+      beats: 8,
+      subdivisions: 2,
+      steps: ['C4', null, 'E4', 'G4', 'A4', null, 'G4', 'E4', 'D4', null, 'E4', 'F4', 'G4', null, 'E4', null],
+      countIn: 4,
+    },
+  },
+  {
+    id: 'm9-6',
+    materialId: 'm9',
+    urutan: 6,
+    judul: 'Lagu Medium II',
+    deskripsi: 'Lagu medium penutup dengan melodi naik-turun dan tempo lebih cepat.',
+    kind: 'rhythm',
+    notes: ALL_PAD_NOTES,
+    rhythm: {
+      bpm: 100,
+      beats: 8,
+      subdivisions: 2,
+      steps: ['E4', 'G4', 'A4', null, 'G4', 'E4', 'D4', null, 'C4', 'D4', 'E4', 'G4', null, 'A4', 'G4', null],
+      countIn: 4,
+    },
+  },
 ];
 
 /* ------------------------------------------------------------------
@@ -436,11 +642,11 @@ export interface LegendItem {
 /** Panduan singkat yang tampil di bawah judul tiap path materi. */
 export const MATERIAL_LEGENDS: Record<MaterialId, LegendItem[]> = {
   m1: [
-    { key: 'Garis 1', label: 'F' },
-    { key: 'Ruang 1', label: 'E' },
-    { key: 'Garis 2', label: 'D' },
-    { key: 'Ruang 2', label: 'C' },
-    { key: 'Garis 4', label: 'G' },
+    { key: 'C4', label: 'garis bantu bawah' },
+    { key: 'D4', label: 'ruang di bawah staf' },
+    { key: 'E4', label: 'garis 5' },
+    { key: 'F4', label: 'ruang 4' },
+    { key: 'G4', label: 'garis 4' },
   ],
   m2: [
     { key: '1/4', label: '1 ketukan' },
@@ -453,9 +659,9 @@ export const MATERIAL_LEGENDS: Record<MaterialId, LegendItem[]> = {
     { key: 'Ketukan', label: 'tekan tepat saat playhead menyentuh not' },
   ],
   m4: [
-    { key: 'Garis atas', label: 'A · B' },
-    { key: 'Ruang atas', label: 'C · D · E · F · G' },
-    { key: 'Nada tinggi', label: 'A4 · B4 · C5 · D5 · E5 · F5 · G5' },
+    { key: 'C4–G4', label: 'nada rendah–tengah' },
+    { key: 'A4–G5', label: 'nada tinggi' },
+    { key: '12 kotak', label: 'semua nada C4–G5' },
   ],
   m5: [
     { key: 'Tanda diam', label: 'Berhenti, jangan tekan' },
@@ -466,6 +672,21 @@ export const MATERIAL_LEGENDS: Record<MaterialId, LegendItem[]> = {
     { key: 'Gabungan', label: 'Posisi · Nilai · Irama' },
     { key: 'Nada', label: 'C · D · E · F · G' },
     { key: 'Lagu mudah', label: 'Terapkan dalam pola lagu' },
+  ],
+  m7: [
+    { key: 'Posisi not', label: 'C4–G4 pada paranada' },
+    { key: 'Tanda diam', label: 'Berhenti, jangan tekan' },
+    { key: 'Not bertitik', label: 'Nilai not + setengahnya' },
+  ],
+  m8: [
+    { key: 'Nilai not', label: '1/4 · 1/2 · 1/1 · 1/8' },
+    { key: 'Lagu', label: 'C4–G4 dalam pola irama' },
+    { key: 'Gabungan', label: 'Nilai not diterapkan saat bermain' },
+  ],
+  m9: [
+    { key: 'Posisi', label: 'semua nada C4–G5' },
+    { key: 'Nilai & simbol', label: 'not, tanda diam, tanda titik' },
+    { key: 'Lagu medium', label: 'pola lebih panjang dan cepat' },
   ],
 };
 

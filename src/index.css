@@ -884,7 +884,7 @@ html.page-leaving #root {
 .explanation-container h3 {
   margin: 0 0 0.85rem;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: none;
@@ -988,7 +988,7 @@ input.note-slider-input::-moz-range-track {
 .pitch-info-text {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: none;
@@ -1261,7 +1261,7 @@ input.note-slider-input::-moz-range-track {
   padding: 0;
   list-style: none;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--muted);
@@ -1426,7 +1426,7 @@ input.note-slider-input::-moz-range-track {
   max-width: 32rem;
   margin: 2.75rem auto 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   line-height: 1.7;
   letter-spacing: 0.08em;
   text-transform: none;
@@ -1452,7 +1452,7 @@ input.note-slider-input::-moz-range-track {
 .lv-badges__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: none;
@@ -1462,7 +1462,7 @@ input.note-slider-input::-moz-range-track {
 .lv-badges__count {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   color: var(--fg);
   font-variant-numeric: tabular-nums;
@@ -1525,7 +1525,7 @@ input.note-slider-input::-moz-range-track {
 }
 
 .lv-badge__desc {
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
   line-height: 1.35;
   color: var(--muted);
 }
@@ -1607,7 +1607,7 @@ input.note-slider-input::-moz-range-track {
   background: transparent;
   color: var(--muted);
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: none;
@@ -1654,7 +1654,7 @@ input.note-slider-input::-moz-range-track {
 .lv-quiz__combo {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--lv-gold-text);
@@ -1667,7 +1667,7 @@ input.note-slider-input::-moz-range-track {
   background: transparent;
   color: var(--muted);
   font-family: var(--font-display);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: none;
   cursor: pointer;
@@ -1706,7 +1706,7 @@ input.note-slider-input::-moz-range-track {
 .lv-quiz__sub {
   margin: 0.4rem 0 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--muted);
@@ -1725,7 +1725,7 @@ input.note-slider-input::-moz-range-track {
 .lv-brief__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: none;
@@ -1751,7 +1751,7 @@ input.note-slider-input::-moz-range-track {
 .lv-brief__best {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   text-transform: none;
   /* Emas pekat: --lv-gold terlalu pudar di atas kartu putih. */
@@ -1792,7 +1792,7 @@ input.note-slider-input::-moz-range-track {
 .lv-beat text {
   fill: var(--muted);
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.05em;
 }
 
@@ -2004,7 +2004,7 @@ input.note-slider-input::-moz-range-track {
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--muted);
@@ -2133,7 +2133,7 @@ input.note-slider-input::-moz-range-track {
 .lv-result__kicker {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--muted);
@@ -2223,7 +2223,7 @@ input.note-slider-input::-moz-range-track {
 
 .lv-result__stat dt {
   font-family: var(--font-display);
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: none;
   color: var(--muted);
@@ -2306,7 +2306,7 @@ input.note-slider-input::-moz-range-track {
 
 .lv-achievement__label {
   font-family: var(--font-display);
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--lv-gold-text);
@@ -2346,7 +2346,7 @@ input.note-slider-input::-moz-range-track {
 .lv-node__tag {
   margin: 0.15rem 0 0;
   font-family: var(--font-display);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--lv-blue-text);
@@ -2570,7 +2570,7 @@ input.note-slider-input::-moz-range-track {
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--lv-blue-text);
@@ -2639,7 +2639,7 @@ input.note-slider-input::-moz-range-track {
 
 .lv-intro__chip-sub {
   font-family: var(--font-display);
-  font-size: 0.4375rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: none;
   text-align: center;
@@ -2662,9 +2662,62 @@ input.note-slider-input::-moz-range-track {
 .lv-intro__group-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: none;
+  color: var(--muted);
+}
+
+/* --- Pengenalan gabungan (Materi 7–9): beberapa bagian dalam satu halaman --- */
+.lv-intro__parts {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.lv-intro__part {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.lv-intro__part + .lv-intro__part {
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.lv-intro__part-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.lv-intro__part-num {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  background-color: var(--lv-surface-2);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.lv-intro__part-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.lv-intro__part-sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
   color: var(--muted);
 }
 
@@ -2715,7 +2768,7 @@ input.note-slider-input::-moz-range-track {
 
 .lv-card__sub {
   font-family: var(--font-display);
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: none;
   color: var(--muted);
@@ -2779,7 +2832,7 @@ input.note-slider-input::-moz-range-track {
   top: 0.35rem;
   padding-left: 0.35rem;
   font-family: var(--font-display);
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 

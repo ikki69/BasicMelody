@@ -10,7 +10,7 @@ interface MateriListProps {
 }
 
 /**
- * Daftar materi (halaman Level tanpa segmen materi): tiga kartu yang terbuka
+ * Daftar materi (halaman Level tanpa segmen materi): kartu yang terbuka
  * berurutan. Klik kartu membuka path level materi tersebut.
  */
 export const MateriList = ({ statsOf, isUnlocked, onSelect }: MateriListProps) => (

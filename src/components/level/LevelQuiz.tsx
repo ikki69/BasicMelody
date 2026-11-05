@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { RHYTHM_PADS, type RhythmLevel } from '../../data/rhythm';
+import { notesOfPattern, padsFor, type RhythmLevel } from '../../data/rhythm';
 import { useRhythmGame, type RhythmOutcome } from '../../hooks/useRhythmGame';
 import type { LevelResult } from '../../hooks/useLevelProgress';
 import { FeedbackTray } from './FeedbackTray';
@@ -31,6 +31,10 @@ export const LevelQuiz = ({ level, best, hasNext, onExit, onNext, onComplete, la
   const judged = useMemo(() => game.verdicts.filter((v) => v !== null).length, [game.verdicts]);
   const progress = game.onsets.length > 0 ? judged / game.onsets.length : 0;
   const isPlaying = game.phase === 'playing' || game.phase === 'countin';
+
+  /** Kotak nada hanya memuat nada yang muncul di pola level ini. */
+  const padNotes = useMemo(() => notesOfPattern(level.steps), [level.steps]);
+  const pads = useMemo(() => padsFor(padNotes), [padNotes]);
 
   const handleStart = useCallback(() => {
     setStartedAt(true);
@@ -109,8 +113,9 @@ export const LevelQuiz = ({ level, best, hasNext, onExit, onNext, onComplete, la
                 Playhead bergerak dari kiri ke kanan. Setiap not berbunyi saat playhead menyentuhnya.
               </li>
               <li>
-                Tekan kotak nada (<strong>C D E F G</strong>) yang sesuai posisi not pada paranada, tepat
-                saat playhead menyentuh not. Bisa juga pakai tombol keyboard C, D, E, F, G.
+                Tekan kotak nada (<strong>{padNotes.join(' · ')}</strong>) yang sesuai posisi not pada
+                paranada, tepat saat playhead menyentuh not. Bisa juga pakai tombol keyboard sesuai huruf
+                nada atau nomor kotaknya.
               </li>
               <li>Istirahat (tanda ·) berarti tidak menekan apa pun.</li>
             </ol>
@@ -148,10 +153,10 @@ export const LevelQuiz = ({ level, best, hasNext, onExit, onNext, onComplete, la
               </div>
             </OrnateFrame>
 
-            <NotePads onPress={game.tap} disabled={!isPlaying} flash={game.padFlash} />
+            <NotePads notes={padNotes} onPress={game.tap} disabled={!isPlaying} flash={game.padFlash} />
 
             <p className="lv-hint" aria-hidden="true">
-              {RHYTHM_PADS.map((pad) => `${pad.label} ${pad.posisi}`).join(' · ')}
+              {pads.map((pad) => `${pad.label} ${pad.posisi}`).join(' · ')}
             </p>
           </>
         )}

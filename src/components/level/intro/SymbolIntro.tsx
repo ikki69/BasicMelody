@@ -10,7 +10,11 @@ interface SymbolIntroProps {
   onExit: () => void;
 }
 
-export const SymbolIntro = ({ level, onComplete, onExit }: SymbolIntroProps) => {
+/**
+ * Isi pengenalan tanda diam & not bertitik tanpa rangka halaman — dipakai
+ * langsung oleh Materi 5 dan sebagai bagian pengenalan gabungan.
+ */
+export const SymbolIntroBody = () => {
   const [selected, setSelected] = useState<DurationCard | null>(null);
 
   const select = useCallback((card: DurationCard) => {
@@ -21,7 +25,7 @@ export const SymbolIntro = ({ level, onComplete, onExit }: SymbolIntroProps) => 
   const isDot = selected ? selected.id.startsWith('dot') : false;
 
   return (
-    <IntroShell level={level} onComplete={onComplete} onExit={onExit}>
+    <>
       <div className="lv-intro__groups">
         <section className="lv-intro__group" aria-label="Tanda diam">
           <h2 className="lv-intro__group-title">Tanda Diam</h2>
@@ -78,6 +82,12 @@ export const SymbolIntro = ({ level, onComplete, onExit }: SymbolIntroProps) => 
           <p className="lv-intro__detail-sub">Tekan salah satu kartu untuk melihat penjelasannya.</p>
         )}
       </div>
-    </IntroShell>
+    </>
   );
 };
+
+export const SymbolIntro = ({ level, onComplete, onExit }: SymbolIntroProps) => (
+  <IntroShell level={level} onComplete={onComplete} onExit={onExit}>
+    <SymbolIntroBody />
+  </IntroShell>
+);
