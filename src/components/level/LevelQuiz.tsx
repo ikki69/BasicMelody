@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { notesOfPattern, padsFor, type RhythmLevel } from '../../data/rhythm';
 import { useRhythmGame, type RhythmOutcome } from '../../hooks/useRhythmGame';
 import type { LevelResult } from '../../hooks/useLevelProgress';
-import { FeedbackTray } from './FeedbackTray';
 import { NotePads } from './NotePads';
 import { OrnateFrame } from '../OrnateFrame';
 import { ResultOverlay } from './ResultOverlay';
@@ -161,8 +160,6 @@ export const LevelQuiz = ({ level, best, hasNext, onExit, onNext, onComplete, la
           </>
         )}
       </div>
-
-      <FeedbackTray message={game.tray} />
 
       {game.phase === 'result' && game.outcome && (
         <ResultOverlay

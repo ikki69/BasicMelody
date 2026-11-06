@@ -93,6 +93,7 @@ aktual yang sudah diverifikasi.
 | Buka kuis irama m3-2 | Kotak nada tampil dan kuis dapat dimulai | ✅ Kotak nada tampil |
 | Tombol metronom pada kuis irama | Tersedia dan dapat ditekan | ✅ Tombol tampil |
 | Selesaikan kuis irama | Layar hasil muncul dan progres tersimpan | ✅ Hasil “Selesai!”, `m3-2.done=true` |
+| Kuis irama: tidak ada popup benar/salah | Selama bermain tidak ada `FeedbackTray` yang mengganggu | ✅ `lv-tray` null selama gameplay |
 | Uji suara nada dan ketukan | Nada terdengar sesuai pitch dan ketukan tepat waktu | ⚠️ Perlu uji manual dengan speaker |
 | Uji sinkronisasi playhead dan suara | Playhead menyentuh not tepat saat nada berbunyi | ⚠️ Perlu uji manual |
 | Uji input keyboard pada kuis | Tombol huruf nada dan nomor kotak berfungsi | ⚠️ Perlu uji manual |
