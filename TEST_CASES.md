@@ -6,8 +6,9 @@ aktual yang sudah diverifikasi.
 - **Tanggal pengujian:** 5 November 2026
 - **Lingkungan:** Chrome 156.0.8078.80 (headless) via Chrome DevTools Protocol, Vite dev server
   `http://127.0.0.1:5173/`
-- **Metode:** 86 pemeriksaan browser otomatis + 20 pemeriksaan statis data/route
-- **Hasil akhir:** **106 / 106 lolos**, 0 gagal
+- **Metode:** 86 pemeriksaan browser otomatis + 20 pemeriksaan statis data/route + 6 pemeriksaan
+  visual popup feedback (desktop, mobile, dan reduced motion)
+- **Hasil akhir:** **112 / 112 lolos**, 0 gagal
 - **Legenda:** ✅ Lolos · ⚠️ Perlu uji manual · ❌ Gagal
 
 ## 1. Landing, Introduction, dan Routing
@@ -92,6 +93,11 @@ aktual yang sudah diverifikasi.
 | Uji suara nada dan ketukan | Nada terdengar sesuai pitch dan ketukan tepat waktu | ⚠️ Perlu uji manual dengan speaker |
 | Uji sinkronisasi playhead dan suara | Playhead menyentuh not tepat saat nada berbunyi | ⚠️ Perlu uji manual |
 | Uji input keyboard pada kuis | Tombol huruf nada dan nomor kotak berfungsi | ⚠️ Perlu uji manual |
+| Jawab soal dengan benar | Popup “Benar!” muncul di tengah layar | ✅ Pusat tepat (720, 450) pada viewport 1440×900 |
+| Jawab soal dengan salah | Popup “Belum tepat” beraksen merah muncul di tengah | ✅ Tampil dengan warna merah |
+| Ukuran popup di mobile 375px | Popup tetap di tengah dan tidak overflow | ✅ 335px, 0px overflow, pusat (187, 406) |
+| Popup saat `prefers-reduced-motion` | Tetap tampil tanpa animasi | ✅ `animation: none`, opacity 1 |
+| Klik saat popup tampil | Klik tetap tembus ke kuis di belakangnya | ✅ `pointer-events: none` |
 
 ## 6. Progres, Kunci Level, dan Badge
 
@@ -124,6 +130,8 @@ aktual yang sudah diverifikasi.
 | Deskripsi badge | Minimal 13px | ✅ 13px |
 | Teks bagian pengenalan gabungan | Minimal 13px | ✅ 13px |
 | Subjudul chip pengenalan | Minimal 12px | ✅ 12px |
+| Judul popup feedback | Minimal 13px | ✅ 17px |
+| Detail popup feedback | Minimal 13px | ✅ 13px |
 | Teks kecil pada halaman kuis | Tidak ada yang di bawah 12px | ✅ Tidak ditemukan |
 
 ## 8. Responsif

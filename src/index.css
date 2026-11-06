@@ -2010,86 +2010,153 @@ input.note-slider-input::-moz-range-track {
   color: var(--muted);
 }
 
-/* --- Feedback tray --- */
+/* --- Feedback popup (tengah layar) --- */
 .lv-tray {
   position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: 70;
-  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
-  border-top: 2px solid var(--border);
-  background-color: rgba(10, 10, 10, 0.96);
-  transform: translateY(110%);
-  /* Muncul â†’ diam â†’ hilang. Durasi diset dari komponen (animationDuration). */
-  animation: lvTray 1.9s ease both;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  /* Kartu mengambang: klik tetap tembus ke kuis di belakangnya. */
+  pointer-events: none;
+  /* Muncul → diam → memudar. Durasi diset dari komponen (animationDuration). */
+  animation: lvTray 1.9s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
 @keyframes lvTray {
   0% {
-    transform: translateY(110%);
+    opacity: 0;
+    transform: translateY(18px) scale(0.86);
   }
   12% {
-    transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0) scale(1.03);
   }
+  18%,
   82% {
-    transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
   100% {
-    transform: translateY(110%);
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
   }
 }
 
-.lv-tray.is-perfect {
-  border-top-color: var(--lv-accent);
+.lv-tray__card {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  width: min(92vw, 27rem);
+  align-items: center;
+  gap: 0.95rem;
+  padding: 0.9rem 1.15rem 0.95rem 0.9rem;
+  border: 2px solid var(--tray-accent);
+  border-radius: 1.5rem;
+  background-color: var(--tray-tint);
+  /* Satu-satunya bayangan: kartu mengambang di atas kuis. */ box-shadow: 0 24px 60px rgba(20, 20, 20, 0.28); /* taste-skill-ignore */
 }
 
-.lv-tray.is-perfect .lv-tray__title {
-  color: var(--lv-accent);
+/* Bulatan warna lembut di pojok kanan agar kartu tidak terasa kotak polos. */
+.lv-tray__card::after {
+  content: '';
+  position: absolute;
+  top: -3.5rem;
+  right: -2rem;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  background-color: var(--tray-accent);
+  opacity: 0.1;
 }
 
+/* Warna semantik: emas untuk hasil tepat, merah untuk salah, biru untuk info. */
+.lv-tray.is-perfect,
 .lv-tray.is-good {
-  border-top-color: var(--lv-gold);
-}
-
-.lv-tray.is-good .lv-tray__title {
-  color: var(--lv-gold);
+  --tray-accent: var(--lv-gold);
+  --tray-ink: var(--lv-gold-text);
+  --tray-icon-ink: #201800;
+  --tray-tint: #fff9e4;
 }
 
 .lv-tray.is-miss {
-  border-top-color: var(--lv-red);
-}
-
-.lv-tray.is-miss .lv-tray__title {
-  color: var(--lv-red);
+  --tray-accent: var(--lv-red);
+  --tray-ink: var(--lv-red-text);
+  --tray-icon-ink: #ffffff;
+  --tray-tint: #fff0f0;
 }
 
 .lv-tray.is-info {
-  border-top-color: var(--lv-blue);
+  --tray-accent: var(--lv-blue);
+  --tray-ink: var(--lv-blue-text);
+  --tray-icon-ink: #ffffff;
+  --tray-tint: #edf9ff;
 }
 
-.lv-tray.is-info .lv-tray__title {
-  color: var(--lv-blue);
+.lv-tray__icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: none;
+  width: 2.9rem;
+  height: 2.9rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background-color: var(--tray-accent);
+  color: var(--tray-icon-ink);
+  animation: lvTrayIcon 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4) 0.12s both;
+}
+
+/* Cincin tipis di sekeliling medali agar terasa seperti lencana. */
+.lv-tray__icon::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 2px solid var(--tray-accent);
+  border-radius: inherit;
+  opacity: 0.22;
+}
+
+@keyframes lvTrayIcon {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(-14deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.12) rotate(3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
 }
 
 .lv-tray__inner {
-  max-width: 44rem;
-  margin: 0 auto;
-  text-align: center;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  text-align: left;
 }
 
 .lv-tray__title {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
   text-transform: none;
+  color: var(--tray-ink);
 }
 
 .lv-tray__detail {
-  margin: 0.25rem 0 0;
+  margin: 0.3rem 0 0;
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 /* --- Layar hasil --- */
@@ -3144,10 +3211,15 @@ input.note-slider-input::-moz-range-track {
     animation: none;
   }
 
-  /* Tray tampil tanpa animasi (langsung terlihat selama pesan aktif). */
+  /* Popup tampil tanpa animasi (langsung terlihat selama pesan aktif). */
   .lv-tray {
     animation: none;
-    transform: translateY(0);
+    opacity: 1;
+    transform: none;
+  }
+
+  .lv-tray__icon {
+    animation: none;
   }
 }
 
