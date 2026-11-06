@@ -7,12 +7,25 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Build outputs
 node_modules
 dist
 dist-ssr
+build
 *.local
 
-# Editor directories and files
+# TypeScript
+*.tsbuildinfo
+
+# Test coverage
+coverage
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE / Editor
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,3 +35,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Deployment
+.vercel
+.netlify
+
+# Certificates / secrets
+*.pem
+*.key
+*.crt
