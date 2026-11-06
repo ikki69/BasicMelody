@@ -306,4 +306,4 @@ export const TIMING = {
 
 /** Teks bubble yang diucapkan maskot saat berjalan ke Manifesto (Fase 2). */
 export const MANIFESTO_BUBBLE =
-  'Tiap nada punya nama, tempat, dan bunyi. Basicmelody menyusunnya jadi tiga langkah pendek: kenali dulu, ulangi sampai hafal, lalu uji dengan kuis. Tidak ada teori yang menumpuk sebelum kamu bisa memainkan sesuatu.';
+  'Tiap nada punya nama, tempat, dan bunyi. Basicmelody menyusunnya jadi tiga langkah pendek. Tidak ada teori yang menumpuk sebelum kamu bisa memainkan sesuatu.';
