@@ -110,9 +110,9 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
             <div ref={guideRef} className="lg:col-span-8">
               <p className="type-body max-w-[62ch] text-pretty text-fg">{TAGLINE}</p>
             </div>
+          </div>
         </div>
       </div>
-    </div>
 
       <ScrollCue />
     </section>
