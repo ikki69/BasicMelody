@@ -3,12 +3,15 @@
 Dokumen ini berisi skenario pengujian aplikasi BasicMelody, hasil yang diharapkan, dan hasil
 aktual yang sudah diverifikasi.
 
-- **Tanggal pengujian:** 5 November 2026
-- **Lingkungan:** Chrome 156.0.8078.80 (headless) via Chrome DevTools Protocol, Vite dev server
+- **Tanggal pengujian:** 6 November 2026
+- **Lingkungan:** Chrome 156.0.8078.81 (headless) via Chrome DevTools Protocol, Vite dev server
   `http://127.0.0.1:5173/`
 - **Metode:** 86 pemeriksaan browser otomatis + 20 pemeriksaan statis data/route + 6 pemeriksaan
-  visual popup feedback (desktop, mobile, dan reduced motion)
-- **Hasil akhir:** **112 / 112 lolos**, 0 gagal
+  visual popup feedback + 26 pemeriksaan hero (mini player, penanda gulir, responsif,
+  `prefers-reduced-motion`, dan pemindaian teks kecil). Ditambah pemeriksaan breakpoint 360×640,
+  390×844, 414×896, 768×1024, 1024×768, dan 1280×800 untuk memastikan tidak ada elemen yang
+  bertumpuk.
+- **Hasil akhir:** **138 / 138 lolos**, 0 gagal
 - **Legenda:** ✅ Lolos · ⚠️ Perlu uji manual · ❌ Gagal
 
 ## 1. Landing, Introduction, dan Routing
@@ -171,7 +174,27 @@ aktual yang sudah diverifikasi.
 | Hash halaman Introduction | Dikenali sebagai route `introduction` | ✅ Sesuai |
 | Hash tak dikenal | Kembali ke landing | ✅ Sesuai |
 
-## 10. Uji Manual yang Masih Diperlukan
+## 10. Hero Landing: Mini Player dan Penanda Gulir
+
+| Skenario | Hasil yang Diharapkan | Hasil |
+|---|---|---|
+| Mini player tampil di hero | Kartu kaca dengan paranada dan simbol not | ✅ 384×242, 5 garis, 4 not |
+| Latar dan sudut kartu | Putih transparan, sudut membulat | ✅ `rgba(255,255,255,0.72)`, radius 21.6px |
+| Posisi desktop 1440×900 | Kartu di ruang kanan-bawah, tidak menimpa maskot | ✅ Kartu top 622, maskot bottom 431 |
+| Klik tombol putar | Animasi nada berjalan dan playhead menyapu | ✅ `heroMiniNote`, `heroMiniPlayhead`, `aria-pressed=true` |
+| Setelah melodi selesai | Tombol kembali ke keadaan semula | ✅ `aria-pressed=false` |
+| Bunyi contoh melodi C mayor | C4–E4–G4–C5 terdengar berurutan | ⚠️ Perlu uji manual dengan speaker |
+| Penanda gulir di hero | Label “Jelajahi” + panah bawah | ✅ Tampil di bawah hero |
+| Animasi panah | Bounce halus dan tidak mengganggu judul | ✅ `heroScrollBob`, 1.9s |
+| Klik penanda gulir | Smooth scroll ke section berikutnya | ✅ `scrollY=900`, `#section-2` top 0 |
+| Mobile 375×812 | Kartu menyusut dan tidak menimpa maskot | ✅ 327×138, jarak 24px, 0 overflow |
+| Tablet 768×1024 | Kartu dibatasi lebarnya, paranada tetap terbaca | ✅ 448px, footer kembali tampil |
+| Desktop pendek 1024×640 | Kartu dipadatkan agar tidak menimpa tagline | ✅ 307×147, tanpa tumpang tindih |
+| `prefers-reduced-motion` | Kartu dan panah statis, Lenis tidak dibuat | ✅ `animation:none`, Lenis off |
+| Klik penanda gulir saat reduced motion | Tetap menggulir tanpa animasi | ✅ `scrollY=812` |
+| Pemindaian teks kecil di hero | Tidak ada teks di bawah 12px | ✅ Tidak ditemukan |
+
+## 11. Uji Manual yang Masih Diperlukan
 
 | Skenario | Hasil yang Diharapkan | Hasil |
 |---|---|---|
@@ -189,6 +212,7 @@ aktual yang sudah diverifikasi.
 2. Jalankan Chrome dengan remote debugging port `9222`
 3. Jalankan validasi statis: `node validate.mjs`
 4. Jalankan uji browser: `node cdp-suite.mjs`
+5. Jalankan uji hero: `node hero-interaction.mjs` dan `node hero-breakpoints.mjs`
 
 Skrip pengujian berada di folder kerja pengujian (`bm-validate`) dan tidak disertakan ke dalam
 repositori aplikasi.

@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText, getPieces } from './SplitText';
+import { MiniNotationPlayer } from './hero/MiniNotationPlayer';
+import { ScrollCue } from './hero/ScrollCue';
 import { useNoteBurst } from '../hooks/useNoteBurst';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -82,36 +84,45 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
           bar peramban sedang tampil), sehingga begitu bilah itu tersembunyi
           section ini 8-10% lebih pendek dari layar dan warna bidang lain
           mengintip di tepi bawah. dvh mengikuti viewport saat itu. */}
-      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[1440px] flex-col justify-center gap-8 px-6 py-20 sm:px-10 lg:gap-12 lg:px-14">
+      <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-[1440px] flex-col justify-center gap-8 px-6 py-20 sm:px-10 lg:gap-12 lg:px-14">
         <h1 className="type-display text-display text-fg" data-smear>
           <SplitText ref={titleRef} text="Basicmelody." ariaLabel="Basicmelody." pieceClassName="type-display" />
         </h1>
 
-        <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-4">
-            <a
-              ref={actionRef}
-              className="cta-next"
-              href="#/introduction"
-              aria-label="Mulai Belajar, menuju halaman pengenalan"
-              onPointerEnter={onPointerEnter}
-            >
-              Mulai Belajar
-              <span className="cta-next__arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
+        <div className="w-full" data-hero-foot>
+          <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-4">
+              <a
+                ref={actionRef}
+                className="cta-next"
+                href="#/introduction"
+                aria-label="Mulai Belajar, menuju halaman pengenalan"
+                onPointerEnter={onPointerEnter}
+              >
+                Mulai Belajar
+                <span className="cta-next__arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </div>
+
+            {/* Kalimat tagline sebagai teks biasa; maskot menyapa dari layer
+                tetapnya, jadi kolom ini tidak perlu mengurus balon ucapannya. */}
+            <div ref={guideRef} className="lg:col-span-8">
+              <p className="type-body max-w-[62ch] text-pretty text-fg">{TAGLINE}</p>
+            </div>
           </div>
 
-          {/* Kalimat tagline sebagai teks biasa; maskot menyapa dari layer
-              tetapnya, jadi kolom ini tidak perlu mengurus balon ucapannya. */}
-          {/* Grid berisi tombol aksi + tagline: penanda untuk `avoid` pose
-              maskot mobile (zonanya harus bebas dari teks). */}
-          <div ref={guideRef} className="lg:col-span-8" data-hero-foot>
-            <p className="type-body max-w-[62ch] text-pretty text-fg">{TAGLINE}</p>
+          {/* Di desktop kartu ini duduk absolut di ruang kosong kanan-bawah,
+              tepat di bawah maskot. Di mobile ia ikut alur (lihat CSS) supaya
+              tidak pernah tertimpa maskot yang turun ke zona bawah. */}
+          <div className="hero-mini-row">
+            <MiniNotationPlayer />
           </div>
         </div>
       </div>
+
+      <ScrollCue />
     </section>
   );
 };

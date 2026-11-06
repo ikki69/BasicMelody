@@ -3674,6 +3674,434 @@ input.note-slider-input::-moz-range-track {
 }
 
 /* ============================================================
+   HERO: KARTU PRATINJAU NOTASI + PENANDA GULIR
+   Kartu mengisi ruang kosong kanan-bawah hero (di bawah maskot) dan
+   ikut alur di mobile supaya tidak pernah tertimpa maskot. Semua gerak
+   memakai CSS; prefers-reduced-motion mematikannya.
+   ============================================================ */
+.hero-mini-row {
+  display: flex;
+  margin-top: 1.4rem;
+}
+
+.hero-mini {
+  width: 100%;
+  max-width: 24rem;
+  padding: 0.9rem 1rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 1.35rem;
+  background-color: rgba(255, 255, 255, 0.72);
+  /* Satu bayangan lembut: kartu kaca, bukan panel tebal. */
+  box-shadow: 0 18px 44px -26px rgba(20, 20, 20, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  animation: heroMiniIn 0.75s var(--ease-out-strong) 0.35s both;
+}
+
+@keyframes heroMiniIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-mini__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hero-mini__copy {
+  min-width: 0;
+}
+
+.hero-mini__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-mini__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background-color: var(--accent-live);
+}
+
+.hero-mini.is-playing .hero-mini__dot {
+  animation: heroMiniDot 0.9s ease-in-out infinite;
+}
+
+@keyframes heroMiniDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+.hero-mini__title {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--fg);
+}
+
+.hero-mini__play {
+  display: inline-flex;
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition: transform 0.16s ease, background-color 0.16s ease;
+}
+
+.hero-mini__play:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px) scale(1.04);
+}
+
+.hero-mini__play:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.hero-mini__play:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+.hero-mini__staff {
+  margin-top: 0.55rem;
+  padding: 0.3rem 0.45rem 0.1rem;
+  border-radius: 0.9rem;
+  background-color: rgba(195, 203, 229, 0.28);
+}
+
+.hero-mini__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-mini__staff-line {
+  stroke: rgba(20, 20, 20, 0.3);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.hero-mini__clef {
+  fill: var(--fg);
+  opacity: 0.9;
+}
+
+.hero-mini__ledger {
+  stroke: rgba(20, 20, 20, 0.5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.hero-mini__notehead {
+  fill: var(--fg);
+}
+
+.hero-mini__stem {
+  stroke: var(--fg);
+  stroke-width: 1.6;
+}
+
+.hero-mini__note {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hero-mini.is-playing .hero-mini__note {
+  animation: heroMiniNote 0.62s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+}
+
+@keyframes heroMiniNote {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-6px) scale(1.16);
+  }
+  62% {
+    transform: translateY(0) scale(0.98);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hero-mini__playhead {
+  stroke: var(--fg);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+  opacity: 0;
+}
+
+.hero-mini.is-playing .hero-mini__playhead {
+  opacity: 0.5;
+  animation: heroMiniPlayhead 1.5s linear both;
+}
+
+@keyframes heroMiniPlayhead {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(292px);
+  }
+}
+
+.hero-mini__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.55rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-mini__status {
+  color: var(--fg);
+}
+
+/* --- Penanda gulir --- */
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 20;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--fg);
+  text-decoration: none;
+  transform: translateX(-50%);
+  opacity: 0.78;
+  transition: opacity 0.2s ease;
+}
+
+.hero-scroll:hover {
+  opacity: 1;
+}
+
+.hero-scroll:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 6px;
+  border-radius: 999px;
+}
+
+.hero-scroll__label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.hero-scroll__arrow {
+  display: inline-flex;
+  animation: heroScrollBob 1.9s var(--ease-soft) infinite;
+}
+
+.hero-scroll__arrow path {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes heroScrollBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* Desktop: kartu menempati ruang kosong kanan-bawah, sejajar tepi konten. */
+@media (min-width: 1024px) {
+  .hero-mini-row {
+    position: absolute;
+    right: 3.5rem;
+    bottom: 2.25rem;
+    width: min(24rem, 31vw);
+    margin: 0;
+    justify-content: flex-end;
+  }
+
+  .hero-mini {
+    max-width: none;
+  }
+}
+
+/* Desktop pendek (mis. 1024×640): kartu dipadatkan supaya tidak
+   bertumpuk dengan tagline yang ikut naik karena konten ditengahkan. */
+@media (min-width: 1024px) and (max-height: 720px) {
+  .hero-mini-row {
+    width: min(22rem, 30vw);
+  }
+
+  .hero-mini {
+    padding: 0.7rem 0.8rem 0.6rem;
+    border-radius: 1.1rem;
+  }
+
+  .hero-mini__head {
+    gap: 0.75rem;
+  }
+
+  .hero-mini__title {
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+  }
+
+  .hero-mini__play {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .hero-mini__staff {
+    margin-top: 0.35rem;
+    padding: 0.2rem 0.35rem 0.05rem;
+  }
+
+  .hero-mini__svg {
+    max-height: 72px;
+  }
+
+  .hero-mini__foot {
+    display: none;
+  }
+}
+
+/* Mobile: kartu ikut alur dan dipadatkan; penanda gulir pindah ke kiri
+   supaya tidak bertumpuk dengan maskot di kanan bawah. */
+@media (max-width: 1023px) {
+  .hero-mini-row {
+    margin-top: 0.85rem;
+  }
+
+  .hero-mini {
+    max-width: none;
+    padding: 0.65rem 0.75rem 0.6rem;
+    border-radius: 1.1rem;
+  }
+
+  .hero-mini__head {
+    gap: 0.75rem;
+  }
+
+  .hero-mini__title {
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+  }
+
+  .hero-mini__play {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .hero-mini__staff {
+    margin-top: 0.35rem;
+    padding: 0.2rem 0.35rem 0.05rem;
+  }
+
+  .hero-mini__svg {
+    max-height: 64px;
+  }
+
+  /* Di mobile keterangan nada disembunyikan agar kartu benar-benar
+     menyusut; status tetap diumumkan lewat live region. */
+  .hero-mini__foot {
+    display: none;
+  }
+
+  .hero-scroll {
+    left: 1.5rem;
+    bottom: 1.25rem;
+    transform: none;
+  }
+}
+
+/* Tablet: kartu dibatasi lebarnya supaya paranada tidak tampil mungil di
+   tengah panel yang lebar. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .hero-mini {
+    max-width: 28rem;
+  }
+
+  .hero-mini__svg {
+    max-height: none;
+  }
+
+  .hero-mini__foot {
+    display: flex;
+  }
+}
+
+/* Gerak berkurang: kartu dan panah tampil statis. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-mini,
+  .hero-mini.is-playing .hero-mini__note,
+  .hero-mini.is-playing .hero-mini__playhead,
+  .hero-mini.is-playing .hero-mini__dot,
+  .hero-scroll__arrow {
+    animation: none;
+  }
+
+  .hero-mini {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-mini.is-playing .hero-mini__playhead {
+    opacity: 0;
+  }
+
+  .hero-scroll {
+    opacity: 0.78;
+  }
+}
+
+/* ============================================================
    BABAK MANIFESTO: PANEL ISI FRAME PENGENALAN
    Panel memuat isi frame halaman Introduction (paranada → kunci G
    → not) yang bergantian dengan fade out lalu fade in. Ketiganya
