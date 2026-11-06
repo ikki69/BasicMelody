@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText, getPieces } from './SplitText';
-import { MiniNotationPlayer } from './hero/MiniNotationPlayer';
 import { ScrollCue } from './hero/ScrollCue';
 import { useNoteBurst } from '../hooks/useNoteBurst';
 
@@ -111,16 +110,9 @@ export const Labs = ({ prefersReducedMotion }: LabsProps) => {
             <div ref={guideRef} className="lg:col-span-8">
               <p className="type-body max-w-[62ch] text-pretty text-fg">{TAGLINE}</p>
             </div>
-          </div>
-
-          {/* Di desktop kartu ini duduk absolut di ruang kosong kanan-bawah,
-              tepat di bawah maskot. Di mobile ia ikut alur (lihat CSS) supaya
-              tidak pernah tertimpa maskot yang turun ke zona bawah. */}
-          <div className="hero-mini-row">
-            <MiniNotationPlayer />
-          </div>
         </div>
       </div>
+    </div>
 
       <ScrollCue />
     </section>
