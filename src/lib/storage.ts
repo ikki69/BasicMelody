@@ -61,3 +61,13 @@ export const writeFlag = (key: string, value: boolean): boolean => {
     return false;
   }
 };
+
+/** Hapus satu key (dipakai alat bantu console untuk reset progres). */
+export const removeKey = (key: string): boolean => {
+  try {
+    window.localStorage.removeItem(fullKey(key));
+    return true;
+  } catch {
+    return false;
+  }
+};
