@@ -8,6 +8,7 @@ import {
 import { levelLabel, type ExtendedLevel } from '../../data/levelsExtended';
 import type { LevelResult } from '../../hooks/useLevelProgress';
 import type { RhythmOutcome, TrayMessage } from '../../hooks/useRhythmGame';
+import { ensureRhythmAudio } from '../../lib/audio';
 import { accuracyFrom, countVerdicts, crownFor, starsFor, type Verdict } from '../../lib/rhythm';
 import { FeedbackTray } from './FeedbackTray';
 import { NoteGlyph } from './NoteGlyph';
@@ -56,6 +57,7 @@ export const DurationQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
   }, []);
 
   const start = useCallback(() => {
+    void ensureRhythmAudio();
     const nextQuestions = pickQuestions(count);
     setQuestions(nextQuestions);
     setOptions(shuffleOptions());
@@ -123,7 +125,7 @@ export const DurationQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [onExit]);
 
-  const progress = questions.length > 0 ? index / questions.length : 0;
+  const progress = questions.length > 0 ? verdicts.filter((verdict) => verdict !== null).length / questions.length : 0;
 
   return (
     <div className="lv-quiz" id="level-quiz" data-level={level.id} data-kind="duration">
@@ -138,7 +140,7 @@ export const DurationQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
           aria-valuemax={100}
           aria-valuenow={Math.round(progress * 100)}
         >
-          <span className="lv-quiz__progress-fill" style={{ transform: `scaleX(${progress})` }} />
+          <span className="lv-quiz__progress-fill" style={{ width: `${progress * 100}%` }} />
         </div>
         <p className="lv-quiz__meta" data-score={verdicts.filter((v) => v === 'perfect').length}>
           benar {verdicts.filter((v) => v === 'perfect').length}/{questions.length}

@@ -16,4 +16,4 @@ export const MUSIC_BG_FADE = 0.6;
  * (paling dekat). Sengaja rendah agar latar tidak mengganggu keterbacaan.
  * Nilai minimum dibiarkan di atas luminansi grid supaya not kecil tetap terlihat.
  */
-export const MUSIC_BG_OPACITY = { min: 0.08, max: 0.26 } as const;
+export const MUSIC_BG_OPACITY = { min: 0.07, max: 0.22 } as const;

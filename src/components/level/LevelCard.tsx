@@ -25,17 +25,28 @@ export const LevelCard = ({ level, stars, done, crown, unlocked, onSelect }: Lev
         : 'pengenalan';
 
   return (
-    <div className={`lv-node is-${state}`} data-level={level.id} data-kind={level.kind}>
-      <button
-        type="button"
+    <div
+      className={`lv-node is-${state}`}
+      data-level={level.id}
+      data-kind={level.kind}
+      role="button"
+      tabIndex={unlocked ? 0 : -1}
+      aria-disabled={!unlocked}
+      aria-label={
+        unlocked
+          ? `Level ${level.urutan}, ${level.judul}, ${statusText}`
+          : `Level ${level.urutan}, ${level.judul} (terkunci)`
+      }
+      onClick={() => unlocked && onSelect(level.id)}
+      onKeyDown={(event) => {
+        if (!unlocked || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        onSelect(level.id);
+      }}
+    >
+      <div
         className="lv-node__button"
-        onClick={() => onSelect(level.id)}
-        disabled={!unlocked}
-        aria-label={
-          unlocked
-            ? `Level ${level.urutan}, ${level.judul}, ${statusText}`
-            : `Level ${level.urutan}, ${level.judul} (terkunci)`
-        }
+        aria-hidden="true"
       >
         {unlocked ? (
           <span className="lv-node__num">{level.urutan}</span>
@@ -55,7 +66,7 @@ export const LevelCard = ({ level, stars, done, crown, unlocked, onSelect }: Lev
             </svg>
           </span>
         )}
-      </button>
+      </div>
 
       <div className="lv-node__meta">
         <p className="lv-node__title">

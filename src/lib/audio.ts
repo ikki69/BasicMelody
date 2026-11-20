@@ -114,3 +114,20 @@ export const playClickPreview = async (accent = false): Promise<boolean> => {
     return false;
   }
 };
+
+/** Efek pendek untuk pop-up jawaban kuis. Audio disiapkan saat pengguna mulai. */
+export const playFeedbackSound = (kind: 'perfect' | 'good' | 'miss'): void => {
+  void ensureRhythmAudio().then((ready) => {
+    if (!ready) return;
+    try {
+      if (kind === 'miss') {
+        ready.click.triggerAttackRelease('A3', '8n');
+      } else {
+        ready.click.triggerAttackRelease('C6', '16n');
+        ready.click.triggerAttackRelease('E6', '16n', '+0.09');
+      }
+    } catch {
+      // Kuis tetap berjalan jika perangkat audio tidak tersedia.
+    }
+  });
+};

@@ -3,7 +3,7 @@ import { padsFor, padFor, type PadNote } from '../../data/rhythm';
 import { levelLabel, type ExtendedLevel, type PositionMode } from '../../data/levelsExtended';
 import type { LevelResult } from '../../hooks/useLevelProgress';
 import type { PadFlash, RhythmOutcome, TrayMessage } from '../../hooks/useRhythmGame';
-import { playNotePreview } from '../../lib/audio';
+import { ensureRhythmAudio, playNotePreview } from '../../lib/audio';
 import { accuracyFrom, countVerdicts, crownFor, starsFor, type Verdict } from '../../lib/rhythm';
 import { FeedbackTray } from './FeedbackTray';
 import { NotePads } from './NotePads';
@@ -80,6 +80,7 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
   }, []);
 
   const start = useCallback(() => {
+    void ensureRhythmAudio();
     const nextQuestions = pickNotes(count, available);
     setQuestions(nextQuestions);
     setVerdicts(nextQuestions.map(() => null));
@@ -169,7 +170,7 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
     start();
   }, [start]);
 
-  const progress = questions.length > 0 ? index / questions.length : 0;
+  const progress = questions.length > 0 ? verdicts.filter((verdict) => verdict !== null).length / questions.length : 0;
 
   return (
     <div
@@ -190,7 +191,7 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
           aria-valuemax={100}
           aria-valuenow={Math.round(progress * 100)}
         >
-          <span className="lv-quiz__progress-fill" style={{ transform: `scaleX(${progress})` }} />
+          <span className="lv-quiz__progress-fill" style={{ width: `${progress * 100}%` }} />
         </div>
         <p className="lv-quiz__meta" data-score={verdicts.filter((v) => v === 'perfect').length}>
           benar {verdicts.filter((v) => v === 'perfect').length}/{questions.length}
@@ -240,26 +241,30 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
               </div>
             </OrnateFrame>
 
-            {currentMode === 'audio' && answeredCorrect === null && (
-              <button
-                type="button"
-                className="lv-btn lv-btn--ghost"
-                id="replayNote"
-                onClick={() => {
-                  if (current) void playNotePreview(current, 0.9).then((ok) => { if (!ok) setSilent(true); });
-                }}
-              >
-                Putar ulang nada
-              </button>
-            )}
+            <div className="lv-quiz__response-slot">
+              {currentMode === 'audio' && answeredCorrect === null && (
+                <button
+                  type="button"
+                  className="lv-btn lv-btn--ghost"
+                  id="replayNote"
+                  onClick={() => {
+                    if (current) void playNotePreview(current, 0.9).then((ok) => { if (!ok) setSilent(true); });
+                  }}
+                >
+                  Putar ulang nada
+                </button>
+              )}
 
-            {answeredCorrect !== null && current && (
-              <p className="lv-hint" data-answer={answeredCorrect ? 'correct' : 'wrong'}>
-                {answeredCorrect
-                  ? `Tepat! Itu nada ${padFor(current).note} (${padFor(current).posisi}).`
-                  : `Jawaban yang benar: ${padFor(current).note} (${padFor(current).posisi}).`}
-              </p>
-            )}
+              {answeredCorrect !== null && current && (
+                <p className="lv-hint" data-answer={answeredCorrect ? 'correct' : 'wrong'}>
+                  {answeredCorrect
+                    ? `Tepat! Itu nada ${padFor(current).note} (${padFor(current).posisi}).`
+                    : `Jawaban yang benar: ${padFor(current).note} (${padFor(current).posisi}).`}
+                </p>
+              )}
+
+              {silent && <p className="lv-brief__warn">Audio tidak aktif, tebak dari petunjuk visualnya.</p>}
+            </div>
 
             <NotePads
               notes={level.notes}
@@ -268,13 +273,13 @@ export const PositionQuiz = ({ level, best, hasNext, onExit, onNext, onComplete 
               flash={flash}
             />
 
-            {answeredCorrect !== null && (
-              <button type="button" className="lv-btn lv-btn--primary" id="nextQuestion" onClick={advance}>
-                {index + 1 >= questions.length ? 'Lihat hasil' : 'Soal berikutnya'}
-              </button>
-            )}
-
-            {silent && <p className="lv-brief__warn">Audio tidak aktif, tebak dari petunjuk visualnya.</p>}
+            <div className="lv-quiz__next-slot">
+              {answeredCorrect !== null && (
+                <button type="button" className="lv-btn lv-btn--primary" id="nextQuestion" onClick={advance}>
+                  {index + 1 >= questions.length ? 'Lihat hasil' : 'Soal berikutnya'}
+                </button>
+              )}
+            </div>
           </>
         )}
       </div>

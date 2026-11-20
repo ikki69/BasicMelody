@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { INTRODUCTION_HASH, LEVEL_HASH } from '../lib/intro';
 import { isIntroCompleted } from '../hooks/useLevelProgress';
-import { useNoteBurst } from '../hooks/useNoteBurst';
 import { isPlainLeftClick, navigateWithFade, prefersReducedMotion } from '../lib/navigate';
 
 /**
@@ -9,7 +8,7 @@ import { isPlainLeftClick, navigateWithFade, prefersReducedMotion } from '../lib
  * dua aksi.
  *
  * Dua tombol:
- * - "Mulai Belajar" (utama, pil grafit solid) → halaman Introduction.
+ * - "Pengenalan" (utama, pil grafit solid) → halaman Introduction.
  * - "Materi Latihan" (sekunder, bidang putih) → halaman Level (baru terbuka
  *   setelah Introduction tuntas).
  *
@@ -17,8 +16,6 @@ import { isPlainLeftClick, navigateWithFade, prefersReducedMotion } from '../lib
  */
 export const FinalCta = () => {
   const [introDone] = useState(isIntroCompleted);
-  // Partikel not musik saat kursor hover tombol "Mulai Belajar".
-  const { onPointerEnter } = useNoteBurst<HTMLAnchorElement>();
 
   const handleNavigate = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     // Biarkan klik dengan modifier (buka tab/jendela baru) jalan normal.
@@ -62,32 +59,29 @@ export const FinalCta = () => {
               <div className="cta-panel__actions">
                 <a
                   href={`#/${INTRODUCTION_HASH}`}
-                  className="cta-next cta-next--primary"
-                  aria-label="Mulai belajar, buka halaman Introduction"
+                  className="cta-next cta-next--explore"
+                  aria-label="Pengenalan, buka halaman Introduction"
                   onClick={handleNavigate}
-                  onPointerEnter={onPointerEnter}
                 >
-                  <span className="cta-next__label">Mulai Belajar</span>
-                  <span className="cta-next__arrow" aria-hidden="true">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                      <path d="M5 12h14M13 6l6 6-6 6" />
+                  <span className="cta-next__icon" aria-hidden="true">
+                    <svg className="cta-next__explore-icon" viewBox="0 0 512 512">
+                      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z" />
                     </svg>
                   </span>
+                  <span className="cta-next__label">Pengenalan</span>
                 </a>
 
                 {introDone ? (
                   <a
                     href={`#/${LEVEL_HASH}`}
-                    className="cta-next cta-next--ghost"
+                    className="cta-next cta-next--ghost cta-next--explore"
                     id="ctaLevel"
                     aria-label="Materi latihan, buka daftar materi"
                     onClick={handleNavigate}
                   >
                     <span className="cta-next__icon" aria-hidden="true">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                        <circle cx="8" cy="17.5" r="3" />
-                        <path d="M11 17.5V5" />
-                        <path d="M11 5c3 0 5 1.6 5 4" />
+                      <svg className="cta-next__explore-icon" viewBox="0 0 512 512" aria-hidden="true">
+                        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z" />
                       </svg>
                     </span>
                     <span className="cta-next__label">Materi Latihan</span>
@@ -95,15 +89,14 @@ export const FinalCta = () => {
                 ) : (
                   <button
                     type="button"
-                    className="cta-next cta-next--ghost cta-next--locked"
+                    className="cta-next cta-next--ghost cta-next--locked cta-next--explore"
                     id="ctaLevel"
                     disabled
                     title="Selesaikan halaman Introduction dulu untuk membuka Materi Latihan"
                   >
                     <span className="cta-next__icon" aria-hidden="true">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                        <rect x="5" y="10.5" width="14" height="9.5" rx="2" />
-                        <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+                      <svg className="cta-next__explore-icon" viewBox="0 0 512 512" aria-hidden="true">
+                        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z" />
                       </svg>
                     </span>
                     <span className="cta-next__label">Materi Latihan</span>

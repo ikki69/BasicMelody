@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import type { TrayMessage } from '../../hooks/useRhythmGame';
+import { playFeedbackSound } from '../../lib/audio';
 
 interface FeedbackTrayProps {
   message: TrayMessage | null;
@@ -50,6 +52,12 @@ const FeedbackIcon = ({ kind }: { kind: TrayMessage['kind'] }) => {
  * supaya animasi ikut berjalan ulang setiap pesan baru.
  */
 export const FeedbackTray = ({ message, duration = 1500 }: FeedbackTrayProps) => {
+  useEffect(() => {
+    if (message && (message.kind === 'perfect' || message.kind === 'good' || message.kind === 'miss')) {
+      playFeedbackSound(message.kind);
+    }
+  }, [message?.id, message?.kind]);
+
   if (!message) return null;
 
   return (

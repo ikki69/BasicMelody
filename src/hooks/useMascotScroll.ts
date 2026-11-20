@@ -316,6 +316,7 @@ const initState = (): MascotState => {
 export const useMascotScroll = (enabled: boolean): MascotMotion => {
   const parts = useRef<MascotParts>({ body: null, glow: null, wipe: null, bubbleAnchor: null });
   const state = useRef<MascotState>(initState());
+  const pulseTimeline = useRef<gsap.core.Timeline | null>(null);
   /** PoseSet aktif (desktop/mobile) — dipakai anchor balon relatif badan. */
   const poseSet = useRef<PoseSet>(window.innerWidth >= 1024 ? POSES_DESKTOP : POSES_MOBILE);
 
@@ -373,13 +374,31 @@ export const useMascotScroll = (enabled: boolean): MascotMotion => {
   const pulse = useCallback(
     (onMid: () => void) => {
       const st = state.current;
+      // Batalkan seluruh pulse sebelumnya, termasuk callback tukar pose.
+      // Kalau hanya tween squashY yang dihentikan, callback lama masih bisa
+      // berjalan setelah scroll cepat dan mengembalikan maskot ke pose usang.
+      pulseTimeline.current?.kill();
       gsap.killTweensOf(st, 'squashY');
+      st.squashY = 1;
+      apply();
       const tl = gsap.timeline({ onUpdate: apply });
+      pulseTimeline.current = tl;
+      tl.eventCallback('onComplete', () => {
+        if (pulseTimeline.current === tl) pulseTimeline.current = null;
+      });
       tl.to(st, { squashY: 0.72, duration: 0.16, ease: 'power2.in' }, 0);
       tl.call(onMid, [], 0.16);
       tl.to(st, { squashY: 1, duration: 0.3, ease: 'back.out(2.2)' }, 0.16);
     },
     [apply]
+  );
+
+  useEffect(
+    () => () => {
+      pulseTimeline.current?.kill();
+      pulseTimeline.current = null;
+    },
+    []
   );
 
   useEffect(() => {

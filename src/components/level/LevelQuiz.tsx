@@ -71,7 +71,7 @@ export const LevelQuiz = ({ level, best, hasNext, onExit, onNext, onComplete, la
         </button>
 
         <div className="lv-quiz__progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>
-          <span className="lv-quiz__progress-fill" style={{ transform: `scaleX(${progress})` }} />
+          <span className="lv-quiz__progress-fill" style={{ width: `${progress * 100}%` }} />
         </div>
 
         <div className="lv-quiz__meta">
